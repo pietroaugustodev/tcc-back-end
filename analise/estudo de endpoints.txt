@@ -1,0 +1,60 @@
+POST     '/adm'         
+request
+{
+    email
+    senha
+}
+response   200
+{
+    id
+    email
+    nome de usuario
+    img 
+}
+
+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+POST      '/cliente'
+request {
+    "nome": "",
+    "email": "",
+    "senha": "",
+    "telefone": "",
+    "cpf": "",
+    "nascimento": "",
+}
+response  200
+{
+    "id": 
+    "nome": "",
+    "email": "",
+    "senha": "",
+    "telefone": "",
+    "cpf": "",
+    "nascimento": "",
+    "data cadastro": ""
+}
+
+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+POST      '/:id cliente/endereco'
+request {
+    "id cliente": ,
+    "cep": "",
+    "rua": "",
+    "cidade": "",
+    "complemento": "",
+    "numero casa": "",
+}
+response  200
+{
+    "id": 
+    "id cliente": "",
+    "cep": "",
+    "rua": "",
+    "cidade": "",
+    "complemento": "",
+    "numero casa": ""
+}
+
+
+
