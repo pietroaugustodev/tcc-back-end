@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { cadastro, cadastroEndereco } from "../repository/clienteRepository.js";
+import { BuscarRepetido, Login, cadastro, cadastroEndereco } from "../repository/clienteRepository.js";
 
 
 const clienteEndpoints = Router()
@@ -13,8 +13,6 @@ clienteEndpoints.post('/cliente', async (req, resp) =>{
             throw new Error('Telefone obrigatório')
         if(!cliente.cpf)
             throw new Error('CPF obrigatório')
-        if(!cliente.nascimento)
-            throw new Error('Nascimento obrigatório')
         if(!cliente.email)
             throw new Error('E-mail obrigatório')
         if(!cliente.senha)
@@ -44,7 +42,7 @@ clienteEndpoints.post('/:num/endereco', async (req, resp) => {
         if(!endereco.cidade)
             throw new Error('Cidade obrigatório')
         if(!endereco.numero)
-            throw new Error('Número obrigatório')
+            throw new Error('Número da casa obrigatório')
 
         const resposta = await cadastroEndereco(endereco)
 
@@ -57,4 +55,38 @@ clienteEndpoints.post('/:num/endereco', async (req, resp) => {
     }
 })
 
+clienteEndpoints.get('/cliente/repetido/:busca', async(req, resp) => {
+    try{
+        const busca = req.params.busca
+
+        const resposta = await BuscarRepetido(busca)
+
+        resp.send(resposta)
+    }
+    catch(err){
+        resp.status(500).send({
+            erro: err.message
+        })
+    }
+})
+
+
+clienteEndpoints.post('/cliente/login', async (req, resp) => {
+    try{
+        const {email, senha} = req.body
+        if(!email)
+            throw new Error('Email obrigatório')
+        if(!senha)
+            throw new Error('Senha obrigatório')
+
+        const resposta = await Login(email, senha)
+
+        resp.send(resposta)
+    }
+    catch(err){
+        resp.status(401).send({
+            erro: err.message
+        })
+    }
+})
 export default clienteEndpoints;

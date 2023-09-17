@@ -56,5 +56,21 @@ response  200
     "numero casa": ""
 }
 
+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
+POST        '/cliente/login'
+request{
+    "email": "",
+    senha: ""
+}
+
+response{
+    id_cliente,
+    nm_cliente,
+    ds_email,
+    ds_cpf,
+    ds_nascimento,
+    ds_telefone,
+    dt_cadastro
+}
 

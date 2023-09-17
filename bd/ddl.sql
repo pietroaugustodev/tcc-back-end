@@ -3,8 +3,8 @@ use bunaShiki;
 
 create table tb_admin (
 	id_admin	int primary key auto_increment,
-	ds_email	varchar(100) unique not null,
-	nm_usuario	varchar(200) unique not null,
+	ds_email	varchar(100) not null,
+	nm_usuario	varchar(200) not null,
 	ds_senha	varchar(20) not null,
 	img_adm		varchar(800) null
 );
@@ -24,7 +24,7 @@ create table tb_detalhes (
 
 create table tb_categoria (
 	id_categoria 	int primary key auto_increment,
-	nm_categoria 	varchar(100) unique not null,
+	nm_categoria 	varchar(100) not null,
 	img_categoria 	varchar(1200) not null
 );
 
@@ -40,7 +40,7 @@ create table tb_produto (
 	id_detalhe					int not null,
     id_admin					int not null,
 	id_categoria 				int not null,
-	nm_produto 					varchar(400) not null unique,
+	nm_produto 					varchar(400) not null,
 	vl_preco 					decimal(5,2) not null,
 	vl_preco_promocional 		decimal(5,2) null,
 	bt_disponivel_assinatura	boolean not null,
@@ -50,14 +50,15 @@ create table tb_produto (
 create table tb_cliente (
 	id_cliente int primary key auto_increment,
 	nm_cliente varchar(200) not null,
-	ds_email varchar(100) not null,
-	ds_senha varchar(100) not null,
-	ds_telefone varchar(100) unique not null,
-	ds_cpf varchar(20) unique not null,
+	ds_telefone varchar(100) not null,
+	ds_cpf varchar(20) not null,
 	dt_nascimento date null,
-	dt_cadastro datetime null
+    ds_email varchar(100) not null,
+	ds_senha varchar(100) not null,
+	dt_cadastro datetime not null
 );
 
+                      
 create table tb_assinatura (
 	id_assinatura int primary key auto_increment,
 	id_cliente int,
@@ -65,7 +66,7 @@ create table tb_assinatura (
 	dt_inicio datetime not null,
 	dt_fim date null,
 	vl_mensalidade decimal(6,2) not null,
-	ds_codigo_assinatura varchar(100) unique not null,
+	ds_codigo_assinatura varchar(100) not null,
     foreign key (id_cliente) references tb_cliente(id_cliente),
     foreign key (id_endereco) references tb_endereco(id_endereco)
 );
@@ -86,15 +87,15 @@ create table tb_cartoes (
 	ds_nome_titular varchar(100) not null,
 	ds_cvv varchar(10) not null,
 	ds_validade varchar(10) not null,
-	nr_cartao varchar(50) not null unique,
-    foreign key (id_cliente) references tb_cliente(id_cliente)
+	nr_cartao varchar(50) not null,
+    foreign key(id_cliente) references tb_cliente(id_cliente)
 );
 
 create table tb_pedido (
 	id_pedido int primary key auto_increment,
 	id_cliente int not null,
     id_endereco_entrega int not null,
-	ds_codigo_pedido varchar(200) unique not null,
+	ds_codigo_pedido varchar(200) not null,
 	tp_entrega varchar(100) not null,
 	tp_forma_pagamento varchar(100) not null ,
 	qtd_parcelas int null,
@@ -118,6 +119,7 @@ create table tb_endereco (
     foreign key (id_cliente) references tb_cliente(id_cliente)
 );
 
+
 create table tb_pedido_item (
 	id_pedido_item int primary key auto_increment,
 	id_pedido int not null,
@@ -128,7 +130,7 @@ create table tb_pedido_item (
 
 create table tb_combo (
 	id_combo int primary key auto_increment,
-	nm_combo varchar(250) not null unique,
+	nm_combo varchar(250) not null,
 	vl_preco decimal(7, 2) not null,
 	qtd_estoque int not null
 );
