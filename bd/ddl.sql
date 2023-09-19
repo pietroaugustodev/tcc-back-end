@@ -1,3 +1,5 @@
+show databases;
+show tables;
 create database bunaShiki;
 use bunaShiki;
 
@@ -44,7 +46,10 @@ create table tb_produto (
 	vl_preco 					decimal(5,2) not null,
 	vl_preco_promocional 		decimal(5,2) null,
 	bt_disponivel_assinatura	boolean not null,
-	qtd_estoque 				int not null
+	qtd_estoque 				int not null,
+    foreign key (id_admin) references tb_admin(id_admin),
+    foreign key (id_detalhe) references tb_detalhes(id_detalhe),
+    foreign key (id_categoria) references tb_categoria(id_categoria)
 );
 
 create table tb_cliente (
