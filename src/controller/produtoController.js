@@ -1,6 +1,6 @@
 import mysql from 'mysql2/promise'
 import { Router } from "express";
-import { teste, cadastrarDetalhes, cadastrarProduto, cadastrarImagens } from '../repository/produtoRepository.js';
+import { teste, cadastrarDetalhes, cadastrarProduto, cadastrarImagens, deletar } from '../repository/produtoRepository.js';
 
 const produtoEndpoints = Router();
 
@@ -43,5 +43,27 @@ produtoEndpoints.post('/produto', async (req, resp) => {
 produtoEndpoints.post('/imagem', async (req, resp) => {
     
 })
+
+
+produtoEndpoints.delete('/deletar/:id', async (req, resp) => {
+    try{
+        const {id} = req.params
+        if(!id || id === 0)
+            throw new Error('Id não identificado ou inválido')
+
+        const resposta = await deletar(id)
+
+        if(resposta !== 1)
+            throw new Error('Não foi possivel excluir')
+
+        resp.status(204).send()
+    }
+    catch(err){
+        resp.status(500).send({
+            erro: err.message
+        })
+    }
+})
+
 
 export default produtoEndpoints;

@@ -58,6 +58,6 @@ export async function deletar(id){
 	                  where id_combo = ?;`
 
     const [resp] =  await conexao.query(comando, [id])
-
+ 
     return resp.affectedRows
 }
