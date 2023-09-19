@@ -28,16 +28,16 @@ export async function cadastrarDetalhes (info) {
     return info.id;
 }
 
+///
+
 export async function cadastrarProduto (info) {
-    const id = await Number(ultimoID());
     const sql = `
                 insert into tb_produto (id_detalhe, id_admin, id_categoria, nm_produto, vl_preco, vl_preco_promocional, bt_disponivel_assinatura, qtd_estoque)
                 values(?, ?, ?, ?, ?, ?, ?, ?);
                 `
 
-    const resposta = await conexao.query(sql, [id, info.idAdmin, info.idCategoria, info.nome, info.preco, info.promocional, info.disponivelAssinatura, info.estoque]);
+    const resposta = await conexao.query(sql, [info.idDetalhe, info.idAdm, info.idCategoria, info.nome, info.preco, info.promocional, info.disponivelAssinatura, info.estoque]);
     const dados = resposta[0];
-    info.idDetalhe = id;
     info.id = dados.insertId;
     return info;
 };
