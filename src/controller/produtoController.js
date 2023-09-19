@@ -4,8 +4,6 @@ import { teste, cadastrarDetalhes, cadastrarProduto, cadastrarImagens } from '..
 
 const produtoEndpoints = Router();
 
-let variavel = ''
-
 produtoEndpoints.post('/detalhes', async (req, resp) => {
     const resposta = {
         intensidade: req.body.intensidade,
@@ -24,8 +22,6 @@ produtoEndpoints.post('/detalhes', async (req, resp) => {
         id: idDetalhe
     }
 
-    variavel = idDetalhe;
-
     resp.json(json);
 })
 
@@ -39,9 +35,9 @@ produtoEndpoints.post('/produto', async (req, resp) => {
             disponivelAssinatura: req.body.disponivelAssinatura,
             estoque: req.body.estoque,
         };
-    
-    const id = variavel;
-    cadastrarProduto(id, info);
+        
+    const cadastro = await cadastrarProduto(info);
+    resp.send(cadastro);
 })
 
 produtoEndpoints.post('/imagem', async (req, resp) => {

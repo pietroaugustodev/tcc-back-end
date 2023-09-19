@@ -7,6 +7,14 @@ export async function teste() {
     return resposta[0];
 }
 
+export async function ultimoID () {
+    const sql = `select last_insert_id();`;
+
+    const resposta = await conexao.query(sql);
+    const dados = resposta[0];
+
+    return dados;
+}
 
 export async function cadastrarDetalhes (info) {
     const sql = `
@@ -16,19 +24,23 @@ export async function cadastrarDetalhes (info) {
     
     const resposta = await conexao.query(sql, [info.intensidade, info.docura, info.acidez, info.torra, info.descricao, info.marca, info.peso, info.alergia, info.dimensoes]);
     const dados = resposta[0];
-    info.id = dados.insertId
+    info.id = dados.insertId;
     return info.id;
 }
 
-export async function cadastrarProduto (id, info) {
+export async function cadastrarProduto (info) {
+    const id = await Number(ultimoID());
     const sql = `
                 insert into tb_produto (id_detalhe, id_admin, id_categoria, nm_produto, vl_preco, vl_preco_promocional, bt_disponivel_assinatura, qtd_estoque)
-                values(?, ?, ?, ?, ?, ?, ?, ?);`
+                values(?, ?, ?, ?, ?, ?, ?, ?);
+                `
 
-    const resposta = await conexao.query(sql, id, [info.idAdmin, info.idCategoria, info.nome, info.preco, info.promocional, info.disponivelAssinatura, info.estoque]);
+    const resposta = await conexao.query(sql, [id, info.idAdmin, info.idCategoria, info.nome, info.preco, info.promocional, info.disponivelAssinatura, info.estoque]);
     const dados = resposta[0];
-    return info.id;
-}
+    info.idDetalhe = id;
+    info.id = dados.insertId;
+    return info;
+};
 
 export async function cadastrarImagens (info) {
     const sql = `
