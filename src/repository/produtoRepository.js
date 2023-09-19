@@ -1,7 +1,12 @@
 import conexao from './connection.js'
 
 export async function teste() {
-    const sql = `select * from tb_admin;`;
+    const sql = `select id_admin    as id
+                        ds_email    as email,
+                        nm_usuario  as usuario,
+                        ds_senha    as senha,
+                        img_adm     as img
+                   from tb_admin;`;
 
     const resposta = await conexao.query(sql);
     return resposta[0];
@@ -60,4 +65,15 @@ export async function deletar(id){
     const [resp] =  await conexao.query(comando, [id])
  
     return resp.affectedRows
+}
+
+export async function buscarImagens(id){
+    const comando = `select id_produto,
+                            ds_caminho  as caminho
+                       from tb_produto_imagem
+                      where id_produto = ?`
+
+    const [resp] = await conexao.query(comando, [id])
+
+    return resp
 }
