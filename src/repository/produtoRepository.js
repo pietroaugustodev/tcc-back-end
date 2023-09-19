@@ -50,3 +50,14 @@ export async function cadastrarImagens (info) {
     const resposta = conexao.query(sql, [info.idProduto, info.caminho]);
     const dados = resposta[0];
 }
+
+
+export async function deletar(id){
+    const comando = `delete 
+                       from tb_combo
+	                  where id_combo = ?;`
+
+    const [resp] =  await conexao.query(comando, [id])
+
+    return resp.affectedRows
+}
