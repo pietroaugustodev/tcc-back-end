@@ -1,13 +1,16 @@
 import mysql from 'mysql2/promise'
 import { Router } from "express";
-import { teste, cadastrarDetalhes, cadastrarProduto, cadastrarImagens } from '../repository/produtoRepository.js';
+import { cadastrarDetalhes, cadastrarProduto, cadastrarImagens, deletar, buscarImagens } from '../repository/produtoRepository.js';
 
 const produtoEndpoints = Router();
 
-let variavel = ''
+produtoEndpoints.post('/imagem', async (req, resp) => {
+    
+})
 
-produtoEndpoints.post('/detalhes', async (req, resp) => {
-    const resposta = {
+
+produtoEndpoints.post('/produto', async (req, resp) => {
+    const infoDetalhes = {
         intensidade: req.body.intensidade,
         docura: req.body.docura,
         acidez: req.body.acidez,
@@ -19,33 +22,59 @@ produtoEndpoints.post('/detalhes', async (req, resp) => {
         dimensoes: req.body.dimensoes
     };
 
-    const idDetalhe = await cadastrarDetalhes(resposta);
-    const json = {
-        id: idDetalhe
-    }
-
-    variavel = idDetalhe;
-
-    resp.json(json);
-})
-
-produtoEndpoints.post('/produto', async (req, resp) => {
-    const info = {
+    const idDetalhe = await cadastrarDetalhes(infoDetalhes);
+    
+    const infoProduto = {
+            idDetalhe: idDetalhe,
             idAdm: req.body.idAdm,
             idCategoria: req.body.idCategoria,
             nome: req.body.nome,
             preco: req.body.preco,
             promocional: req.body.promocional,
             disponivelAssinatura: req.body.disponivelAssinatura,
-            estoque: req.body.estoque,
+            estoque: req.body.estoque
         };
-    
-    const id = variavel;
-    cadastrarProduto(id, info);
+        
+    const cadastro = await cadastrarProduto(infoProduto);
+    resp.send(cadastro);
+});
+
+produtoEndpoints.delete('/deletar/:id', async (req, resp) => {
+    try{
+        const {id} = req.params
+        if(!id || id === 0)
+            throw new Error('Id não identificado ou inválido')
+
+        const resposta = await deletar(id)
+
+        if(resposta !== 1)
+            throw new Error('Não foi possivel excluir')
+
+        resp.status(204).send()
+    }
+    catch(err){
+        resp.status(500).send({
+            erro: err.message
+        })
+    }
 })
 
-produtoEndpoints.post('/imagem', async (req, resp) => {
-    
+produtoEndpoints.get('/:id/imagens', async (req, resp) =>{
+    try{
+        const {id} = req.params
+            if(!id || id === 0)
+                throw new Error('Id não identificado ou indisponível')
+
+        const resposta = await buscarImagens(id)
+
+        resp.send(resposta)
+    }
+    catch(err){
+        resp.status(500).send({
+            erro: err.message
+        })
+    }
 })
+
 
 export default produtoEndpoints;

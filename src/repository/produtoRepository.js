@@ -1,12 +1,25 @@
 import conexao from './connection.js'
 
 export async function teste() {
-    const sql = `select * from tb_admin;`;
+    const sql = `select id_admin    as id
+                        ds_email    as email,
+                        nm_usuario  as usuario,
+                        ds_senha    as senha,
+                        img_adm     as img
+                   from tb_admin;`;
 
     const resposta = await conexao.query(sql);
     return resposta[0];
 }
 
+export async function ultimoID () {
+    const sql = `select last_insert_id();`;
+
+    const resposta = await conexao.query(sql);
+    const dados = resposta[0];
+
+    return dados;
+}
 
 export async function cadastrarDetalhes (info) {
     const sql = `
@@ -16,19 +29,23 @@ export async function cadastrarDetalhes (info) {
     
     const resposta = await conexao.query(sql, [info.intensidade, info.docura, info.acidez, info.torra, info.descricao, info.marca, info.peso, info.alergia, info.dimensoes]);
     const dados = resposta[0];
-    info.id = dados.insertId
+    info.id = dados.insertId;
     return info.id;
 }
 
-export async function cadastrarProduto (id, info) {
+///
+
+export async function cadastrarProduto (info) {
     const sql = `
                 insert into tb_produto (id_detalhe, id_admin, id_categoria, nm_produto, vl_preco, vl_preco_promocional, bt_disponivel_assinatura, qtd_estoque)
-                values(?, ?, ?, ?, ?, ?, ?, ?);`
+                values(?, ?, ?, ?, ?, ?, ?, ?);
+                `
 
-    const resposta = await conexao.query(sql, id, [info.idAdmin, info.idCategoria, info.nome, info.preco, info.promocional, info.disponivelAssinatura, info.estoque]);
+    const resposta = await conexao.query(sql, [info.idDetalhe, info.idAdm, info.idCategoria, info.nome, info.preco, info.promocional, info.disponivelAssinatura, info.estoque]);
     const dados = resposta[0];
-    return info.id;
-}
+    info.id = dados.insertId;
+    return info;
+};
 
 export async function cadastrarImagens (info) {
     const sql = `
@@ -37,4 +54,26 @@ export async function cadastrarImagens (info) {
 
     const resposta = conexao.query(sql, [info.idProduto, info.caminho]);
     const dados = resposta[0];
+}
+
+
+export async function deletar(id){
+    const comando = `delete 
+                       from tb_combo
+	                  where id_combo = ?;`
+
+    const [resp] =  await conexao.query(comando, [id])
+ 
+    return resp.affectedRows
+}
+
+export async function buscarImagens(id){
+    const comando = `select id_produto,
+                            ds_caminho  as caminho
+                       from tb_produto_imagem
+                      where id_produto = ?`
+
+    const [resp] = await conexao.query(comando, [id])
+
+    return resp
 }
