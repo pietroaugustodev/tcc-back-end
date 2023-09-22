@@ -29,7 +29,7 @@ clienteEndpoints.post('/cliente', async (req, resp) =>{
     }
 })
 
-clienteEndpoints.post('/:num/endereco', async (req, resp) => {
+clienteEndpoints.post('/endereco/:num', async (req, resp) => {
     try{
         const endereco = req.body
         endereco.idCliente = Number(req.params.num)
