@@ -1,6 +1,5 @@
-import mysql from 'mysql2/promise'
 import { Router } from "express";
-import { cadastrarDetalhes, cadastrarProduto, cadastrarImagens, deletar, buscarImagens } from '../repository/produtoRepository.js';
+import { cadastrarDetalhes, cadastrarProduto, cadastrarImagens, BuscarImagens, deletarProduto, deletarDetalhes, AlterarImagens } from '../repository/produtoRepository.js';
 
 const produtoEndpoints = Router();
 
@@ -45,42 +44,7 @@ produtoEndpoints.post('/produto', async (req, resp) => {
     resp.send(cadastro);
 });
 
-produtoEndpoints.delete('/deletar/:id', async (req, resp) => {
-    try{
-        const {id} = req.params
-        if(!id || id === 0)
-            throw new Error('Id não identificado ou inválido')
-
-        const resposta = await deletar(id)
-
-        if(resposta !== 1)
-            throw new Error('Não foi possivel excluir')
-
-        resp.status(204).send()
-    }
-    catch(err){
-        resp.status(500).send({
-            erro: err.message
-        })
-    }
-})
-
-produtoEndpoints.get('/:id/imagens', async (req, resp) =>{
-    try{
-        const {id} = req.params
-            if(!id || id === 0)
-                throw new Error('Id não identificado ou indisponível')
-
-        const resposta = await buscarImagens(id)
-
-        resp.send(resposta)
-    }
-    catch(err){
-        resp.status(500).send({
-            erro: err.message
-        })
-    }
-})
+// Buscando
 
 produtoEndpoints.get('/produtos', async (req, resp) => {
     try{
@@ -95,6 +59,8 @@ produtoEndpoints.get('/produtos', async (req, resp) => {
     }
 })
 
+// Alterando
+
 produtoEndpoints.get('/produto/:id', async (req, resp) => {
     try{
         const {id} = req.params
@@ -102,6 +68,23 @@ produtoEndpoints.get('/produto/:id', async (req, resp) => {
             throw new Error('Id produto não identificado')
 
         const resposta = await BuscaProdutoId(id)
+
+        resp.send(resposta)
+    }
+    catch(err){
+        resp.status(500).send({
+            erro: err.message
+        })
+    }
+})
+
+produtoEndpoints.get('/:id/imagens', async (req, resp) =>{
+    try{
+        const {id} = req.params
+            if(!id || id === 0)
+                throw new Error('Id não identificado ou indisponível')
+
+        const resposta = await BuscarImagens(id)
 
         resp.send(resposta)
     }
@@ -149,7 +132,7 @@ produtoEndpoints.put('/:id/produto', async (req, resp) =>{
         const resposta = await AlterarProduto(produto, id)
 
         if(resposta !== 1)
-            throw new Error('Não foi possivel alterar')
+            throw new Error('Não foi possivel alterar o produto')
 
         resp.status(204).send()
     }
@@ -159,7 +142,30 @@ produtoEndpoints.put('/:id/produto', async (req, resp) =>{
         })
     }
 })
-produtoEndpoints.put('/produto/:id/detalhes', async (req, resp) => {
+
+produtoEndpoints.put('/:id/imagens', async (req, resp) => {
+    try{
+        const { idProduto, caminho} = req.body;
+        if(!idProduto || isNaN(idProduto) || idProduto === 0)
+            throw new Error('Id do produto inválido ou indefinido')
+        if(!caminho)
+            throw new Error('Caminho indefinido')
+
+        const resposta = await AlterarImagens(idProduto, caminho)
+
+        if(resposta !== 1)
+            throw new Error('Não foi possivel alterar as imagens')
+        resp.status(204).send()
+    }
+    catch(err){
+        resp.status(500).send({
+            erro: err.message
+        })
+    }
+})
+
+
+produtoEndpoints.put('/:id/detalhes', async (req, resp) => {
     try{
         const detalhes = req.body
         const {id} = req.params
@@ -184,7 +190,7 @@ produtoEndpoints.put('/produto/:id/detalhes', async (req, resp) => {
         const resposta = await AlterarDetalhesProduto(detalhes, id)
 
         if(resposta !== 1) 
-            throw new Error('Os detalhes pode ser alterado')
+            throw new Error('Os detalhes não pode ser alterado')
         
         resp.status(204).send()
     }
@@ -195,4 +201,45 @@ produtoEndpoints.put('/produto/:id/detalhes', async (req, resp) => {
     }
 })
 
+// Deletando
+
+produtoEndpoints.delete('/deletar/produto/:id', async (req, resp) => {
+    try{
+        const {id} = req.params
+        if(!id || id === 0 || isNaN(id))
+            throw new Error('Id não identificado ou inválido')
+
+        const resposta = await deletarProduto(id)
+
+        if(resposta !== 1)
+            throw new Error('Não foi possivel excluir')
+
+        resp.status(204).send()
+    }
+    catch(err){
+        resp.status(500).send({
+            erro: err.message
+        })
+    }
+})
+
+produtoEndpoints.delete('/deletar/detalhes/:id', async (req, resp) =>{
+    try{
+        const {id} = req.params
+        if(!id || id === 0 || isNaN(id))
+            throw new Error('Id inválido ou não identificado')
+
+        const resposta = await deletarDetalhes(id)
+
+        if(resposta !== 1) 
+            throw new Error('Não foi possivel excluir')
+
+        resp.status(204).send()
+    }
+    catch(err){
+        resp.status(500).send({
+            erro: err.message
+        })
+    }
+})
 export default produtoEndpoints;

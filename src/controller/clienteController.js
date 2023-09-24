@@ -18,6 +18,12 @@ clienteEndpoints.post('/cliente', async (req, resp) =>{
         if(!cliente.senha)
             throw new Error('Senha obrigatória')
 
+        const emailRepetido = await BuscarRepetido(cliente.email)
+        const telefoneRepetido = await BuscarRepetido(cliente.telefone)
+        const cpfRepetido = await BuscarRepetido(cliente.cpf)
+        if(emailRepetido || telefoneRepetido || cpfRepetido)
+            throw new Error('Você já possui cadastro')
+
         const resposta = await cadastro(cliente)
 
         resp.send(resposta)
@@ -37,10 +43,10 @@ clienteEndpoints.post('/endereco/:num', async (req, resp) => {
             throw new Error('Id endereço inválido ou não encontrado')
         if(!endereco.cep)
             throw new Error('CEP obrigatório')
-        if(!endereco.rua)
-            throw new Error('Rua obrigatório')
         if(!endereco.cidade)
-            throw new Error('Cidade obrigatório')
+            throw new Error('CEP obrigatório')
+        if(!endereco.rua)
+            throw new Error('CEP obrigatório')
         if(!endereco.numero)
             throw new Error('Número da casa obrigatório')
 
@@ -55,20 +61,6 @@ clienteEndpoints.post('/endereco/:num', async (req, resp) => {
     }
 })
 
-clienteEndpoints.get('/cliente/repetido/:busca', async(req, resp) => {
-    try{
-        const busca = req.params.busca
-
-        const resposta = await BuscarRepetido(busca)
-
-        resp.send(resposta)
-    }
-    catch(err){
-        resp.status(500).send({
-            erro: err.message
-        })
-    }
-})
 
 
 clienteEndpoints.post('/cliente/login', async (req, resp) => {

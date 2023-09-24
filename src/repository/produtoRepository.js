@@ -1,5 +1,6 @@
 import conexao from './connection.js'
 
+// Cadastrando
 export async function teste() {
     const sql = `select id_admin    as id
                         ds_email    as email,
@@ -33,8 +34,6 @@ export async function cadastrarDetalhes (info) {
     return info.id;
 }
 
-///
-
 export async function cadastrarProduto (info) {
     const sql = `
                 insert into tb_produto (id_detalhe, id_admin, id_categoria, nm_produto, vl_preco, vl_preco_promocional, bt_disponivel_assinatura, qtd_estoque)
@@ -56,18 +55,61 @@ export async function cadastrarImagens (info) {
     const dados = resposta[0];
 }
 
+// Buscas
 
-export async function deletar(id){
-    const comando = `delete 
-                       from tb_combo
-	                  where id_combo = ?;`
+export async function BuscarProdutos(){
+  const comando = `select id_detalhe,
+                          id_admin,
+                          id_categoria,
+                          nm_produto                as produto,
+                          vl_preco                  as preco,
+                          vl_preco_promocional      as promocao,
+                          bt_disponivel_assinatura  as assinatura,
+                          qtd_estoque               as estoque
+                     from tb_produto`
 
-    const [resp] =  await conexao.query(comando, [id])
- 
-    return resp.affectedRows
+  const [resp] = await conexao.query(comando)
+
+  return resp;
 }
 
-export async function buscarImagens(id){
+// Alteração 
+
+export async function BuscaProdutoId(id) {
+  let comando = `select id_detalhe,
+                        id_admin,
+                        id_categoria,
+                        nm_produto                as produto,
+                        vl_preco                  as preco,
+                        vl_preco_promocional      as promocao,
+                        bt_disponivel_assinatura  as assinatura,
+                        qtd_estoque      			    as estoque
+                   from tb_produto
+                  where id_produto = ?`
+  const [resp] = await conexao.query(comando, id)
+
+  return resp[0]
+}
+
+export async function BuscaDetalhesId(id) {
+  let comando = `select id_detalhe,
+                        ds_intensidade 	as intensidade,
+                        ds_docura 		  as docura,
+                        ds_acidez 		  as acidez,
+                        ds_torra 		    as torra,
+                        ds_produto 		  as produto,
+                        ds_marca 		    as marca,
+                        ds_peso 		    as peso,
+                        ds_alergia 		  as alergia,
+                        ds_dimensoes 	  as dimensoes
+                   from tb_detalhes
+                  where id_detalhe = ?`
+  const [resp] = await conexao.query(comando, id)
+
+  return resp[0]
+}
+
+export async function BuscarImagens(id){
     const comando = `select id_produto,
                             ds_caminho  as caminho
                        from tb_produto_imagem
@@ -77,22 +119,6 @@ export async function buscarImagens(id){
 
     return resp
 }
-
-export async function BuscarProdutos(){
-    const comando = `select id_detalhe,
-                            id_admin,
-                            id_categoria,
-                            nm_produto                as produto,
-                            vl_preco                  as preco,
-                            vl_preco_promocional      as promocao,
-                            bt_disponivel_assinatura  as assinatura,
-                            qtd_estoque               as estoque
-                       from tb_produto`
-  
-    const [resp] = await conexao.query(comando)
-  
-    return resp;
-  }
   
   export async function AlterarProduto(produto, id){
     const comando = `update tb_produto
@@ -109,41 +135,6 @@ export async function BuscarProdutos(){
   
     return resp.affectedRows
   }
-  
-  export async function BuscaProdutoId(id) {
-    let comando = `select id_detalhe,
-                          id_admin,
-                          id_categoria,
-                          nm_produto                as produto,
-                          vl_preco                  as preco,
-                          vl_preco_promocional      as promocao,
-                          bt_disponivel_assinatura  as assinatura,
-                          qtd_estoque      			as estoque
-                     from tb_produto
-                    where id_produto = ?`
-    const [resp] = await conexao.query(comando, id)
-  
-    return resp[0]
-  }
-  
-  export async function BuscaDetalhesId(id) {
-    let comando = `select id_detalhe,
-                          ds_intensidade 	as intensidade,
-                          ds_docura 		  as docura,
-                          ds_acidez 		  as acidez,
-                          ds_torra 		    as torra,
-                          ds_produto 		  as produto,
-                          ds_marca 		    as marca,
-                          ds_peso 		    as peso,
-                          ds_alergia 		  as alergia,
-                          ds_dimensoes 	  as dimensoes
-                     from tb_detalhes
-                    where id_detalhe = ?`
-    const [resp] = await conexao.query(comando, id)
-  
-    return resp[0]
-  }
-  
   export async function AlterarDetalhesProduto(detalhes, id){
     const comando = `update tb_detalhes
                         set ds_intensidade = ?,
@@ -161,3 +152,45 @@ export async function BuscarProdutos(){
   
     return resp.affectedRows
   }
+  
+  export async function AlterarImagens(idProduto, caminho){
+    const comando = `update tb_produto_imagem
+                        set ds_caminho = ?,
+                            id_produto = ?
+                      where id_produto = ?`
+
+    const [resp] = await conexao.query(comando, [caminho, idProduto])
+
+    return resp.affectedRows
+}
+  // Deletando
+
+  export async function deletarProduto(id){
+    const comando = `delete 
+                       from tb_produto
+	                    where id_produto = ?;`
+
+    const [resp] =  await conexao.query(comando, [id])
+ 
+    return resp.affectedRows
+}
+
+export async function deletarDetalhes(id){
+  const comando = `delete 
+                     from tb_detalhes
+                    where id_detalhes = ?;`
+
+  const [resp] =  await conexao.query(comando, [id])
+
+  return resp.affectedRows
+}
+
+export async function deletarImagens(id){
+  const comando = `delete 
+                     from tb_produto_imagem
+                    where id_produto = ?`
+
+  const [resp] =  await conexao.query(comando, [id])
+
+  return resp.affectedRows
+}
