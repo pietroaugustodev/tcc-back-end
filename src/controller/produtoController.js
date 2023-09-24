@@ -4,8 +4,14 @@ import { cadastrarDetalhes, cadastrarProduto, cadastrarImagens, deletar, buscarI
 
 const produtoEndpoints = Router();
 
-produtoEndpoints.post('/imagem', async (req, resp) => {
-    
+produtoEndpoints.post('/imagemproduto', async (req, resp) => {
+    const infoImagem = {
+        idProduto: req.body.idProduto,
+        caminho: req.body.caminho
+    }
+
+    const cadastrar = cadastrarImagens(infoImagem);
+    resp.send(cadastrar)
 })
 
 
