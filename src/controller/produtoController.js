@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { cadastrarDetalhes, cadastrarProduto, cadastrarImagens, BuscarImagens, deletarProduto, deletarDetalhes, AlterarImagens } from '../repository/produtoRepository.js';
+import { cadastrarDetalhes, cadastrarProduto, cadastrarImagens, BuscarImagens, deletarProduto, deletarDetalhes, AlterarImagens, BuscarProdutos, BuscarIdCategoria, BuscarIdAdm, BuscaProdutoId, deletarImagens } from '../repository/produtoRepository.js';
 
 const produtoEndpoints = Router();
 
@@ -43,6 +43,11 @@ produtoEndpoints.post('/produto', async (req, resp) => {
 produtoEndpoints.get('/produtos', async (req, resp) => {
     try{
         const resposta = await BuscarProdutos()
+
+        for(let cont = 0; cont < resposta.length; cont++){
+            resposta[cont].admin = await BuscarIdAdm(resposta[cont].id_admin) 
+            resposta[cont].categoria = await BuscarIdCategoria(resposta[cont].id_categoria)
+        }
 
         resp.send(resposta)
     }
@@ -197,16 +202,29 @@ produtoEndpoints.put('/:id/detalhes', async (req, resp) => {
 
 // Deletando
 
-produtoEndpoints.delete('/deletar/produto/:id', async (req, resp) => {
+produtoEndpoints.delete('/deletar/produto', async (req, resp) => {
     try{
-        const {id} = req.params
-        if(!id || id === 0 || isNaN(id))
-            throw new Error('Id não identificado ou inválido')
+        const {idDetalhe, idProduto} = req.query
+        console.log(idDetalhe);
+        console.log(idProduto);
+        if(!idProduto || idProduto === 0 || isNaN(idProduto))
+            throw new Error('Id do produto não identificado ou inválido')
+        if(!idDetalhe || idDetalhe === 0 || isNaN(idDetalhe))
+            throw new Error('id do detalhe não identificado ou inválido')
 
-        const resposta = await deletarProduto(id)
+        const respostaImagens = await deletarImagens(idProduto)
+        const respostaDetalhes = await deletarDetalhes(idDetalhe)
+        const respostaProduto = await deletarProduto(idProduto)
 
-        if(resposta !== 1)
-            throw new Error('Não foi possivel excluir')
+        if(respostaProduto !== 1)
+            throw new Error('Não foi possivel excluir o produto')
+        
+        if(respostaDetalhes !== 1)
+            throw new Error('Não foi possivel excluir os detalhes')
+
+            
+        if(respostaImagens !== 1)
+            throw new Error('Não foi possivel excluir as imagens')
 
         resp.status(204).send()
     }
@@ -217,23 +235,4 @@ produtoEndpoints.delete('/deletar/produto/:id', async (req, resp) => {
     }
 })
 
-produtoEndpoints.delete('/deletar/detalhes/:id', async (req, resp) =>{
-    try{
-        const {id} = req.params
-        if(!id || id === 0 || isNaN(id))
-            throw new Error('Id inválido ou não identificado')
-
-        const resposta = await deletarDetalhes(id)
-
-        if(resposta !== 1) 
-            throw new Error('Não foi possivel excluir')
-
-        resp.status(204).send()
-    }
-    catch(err){
-        resp.status(500).send({
-            erro: err.message
-        })
-    }
-})
 export default produtoEndpoints;
