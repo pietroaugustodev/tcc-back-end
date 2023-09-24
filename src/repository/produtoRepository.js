@@ -58,7 +58,8 @@ export async function cadastrarImagens (info) {
 // Buscas
 
 export async function BuscarProdutos(){
-  const comando = `select id_detalhe,
+  const comando = `select id_produto                as id,
+                          id_detalhe,
                           id_admin,
                           id_categoria,
                           nm_produto                as produto,
@@ -72,6 +73,27 @@ export async function BuscarProdutos(){
 
   return resp;
 }
+
+export async function BuscarIdCategoria(id){
+  const comando = `select nm_categoria  as categoria
+                     from tb_categoria
+                    where id_categoria = ?`
+
+  const [resp] = await conexao.query(comando, [id])
+
+  return resp[0].categoria
+}
+
+export async function BuscarIdAdm(id){
+  const comando = `select nm_usuario  as usuario
+                     from tb_admin
+                    where id_admin = ?`
+
+  const [resp] = await conexao.query(comando, [id])
+
+  return resp[0].usuario
+}
+
 
 // Alteração 
 
@@ -178,7 +200,7 @@ export async function BuscarImagens(id){
 export async function deletarDetalhes(id){
   const comando = `delete 
                      from tb_detalhes
-                    where id_detalhes = ?;`
+                    where id_detalhe = ?;`
 
   const [resp] =  await conexao.query(comando, [id])
 
