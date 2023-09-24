@@ -3,13 +3,27 @@ import { cadastrarDetalhes, cadastrarProduto, cadastrarImagens, BuscarImagens, d
 
 const produtoEndpoints = Router();
 
-produtoEndpoints.post('/imagem', async (req, resp) => {
+produtoEndpoints.post('/imagemproduto', async (req, resp) => {
+    try {
+        const infoImagem = {
+            idProduto: req.body.idProduto,
+            caminho: req.body.caminho
+        }
+
+        const cadastrar = cadastrarImagens(infoImagem);
+        resp.send(cadastrar)
+    } catch (error) {
+        resp.status(500).send({
+            erro: error.message
+        })
+    }
     
 })
 
 
 produtoEndpoints.post('/produto', async (req, resp) => {
-    const infoDetalhes = {
+    try {
+        const infoDetalhes = {
         intensidade: req.body.intensidade,
         docura: req.body.docura,
         acidez: req.body.acidez,
@@ -22,7 +36,7 @@ produtoEndpoints.post('/produto', async (req, resp) => {
     };
 
     const idDetalhe = await cadastrarDetalhes(infoDetalhes);
-    
+
     const infoProduto = {
             idDetalhe: idDetalhe,
             idAdm: req.body.idAdm,
@@ -33,9 +47,24 @@ produtoEndpoints.post('/produto', async (req, resp) => {
             disponivelAssinatura: req.body.disponivelAssinatura,
             estoque: req.body.estoque
         };
-        
+
+    if (!infoProduto.nome) throw new Error('Por favor, selecione o nome do produto!');
+    if (!infoDetalhes.peso) throw new Error('Por favor, selecione o peso do produto!');
+    if (!infoProduto.estoque) throw new Error('Por favor, selecione a quantidade disponível no estoque!');
+    if (!infoDetalhes.marca) throw new Error('Por favor, insira a marca do produto!');
+    if (!infoProduto.preco) throw new Error('Por favor, selecione o preço do produto!');
+    if (!infoDetalhes.dimensoes) throw new Error('Por favor, insira as dimensões do produto');
+    if (!infoDetalhes.descricao) throw new Error('Por favor, insira uma descrição ao produto!');
+    if (!infoDetalhes.alergia) throw new Error('Por favor, preencha o campo sobre alergias!');
+    if (!infoProduto.idCategoria) throw new Error('Por favor, selecione a categoria!');
+     
     const cadastro = await cadastrarProduto(infoProduto);
     resp.send(cadastro);
+    } catch (error) {
+        resp.status(500).send({
+            erro: error.message
+        })
+    }
 });
 
 // Buscando
@@ -234,5 +263,6 @@ produtoEndpoints.delete('/deletar/produto', async (req, resp) => {
         })
     }
 })
+
 
 export default produtoEndpoints;

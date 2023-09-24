@@ -42,7 +42,7 @@ export async function cadastrarProduto (info) {
 
     const resposta = await conexao.query(sql, [info.idDetalhe, info.idAdm, info.idCategoria, info.nome, info.preco, info.promocional, info.disponivelAssinatura, info.estoque]);
     const dados = resposta[0];
-    info.id = dados.insertId;
+    info.idProduto = dados.insertId;
     return info;
 };
 
