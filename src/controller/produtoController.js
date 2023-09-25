@@ -53,6 +53,7 @@ produtoEndpoints.post('/produto', async (req, resp) => {
     if (!infoProduto.estoque) throw new Error('Por favor, selecione a quantidade disponível no estoque!');
     if (!infoDetalhes.marca) throw new Error('Por favor, insira a marca do produto!');
     if (!infoProduto.preco) throw new Error('Por favor, selecione o preço do produto!');
+    if (infoProduto.preco == 0) throw new Error('Insira preço diferente de 0!');
     if (!infoDetalhes.dimensoes) throw new Error('Por favor, insira as dimensões do produto');
     if (!infoDetalhes.descricao) throw new Error('Por favor, insira uma descrição ao produto!');
     if (!infoDetalhes.alergia) throw new Error('Por favor, preencha o campo sobre alergias!');
