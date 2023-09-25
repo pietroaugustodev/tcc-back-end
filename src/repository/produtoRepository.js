@@ -153,7 +153,7 @@ export async function BuscarImagens(id){
                             bt_disponivel_assinatura = ?
                       where id_produto = ?`
   
-    const [resp] = await conexao.query(comando, [produto.nome, produto.id_admin, produto.id_categoria, produto.promocao, produto.preco, produto.estoque, produto.assinatura, id])
+    const [resp] = await conexao.query(comando, [produto.nome, produto.id_admin, produto.id_categoria, produto.promocional, produto.preco, produto.estoque, produto.assinatura, id])
   
     return resp.affectedRows
   }
