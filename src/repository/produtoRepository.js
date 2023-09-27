@@ -98,7 +98,8 @@ export async function BuscarIdAdm(id){
 // Alteração 
 
 export async function BuscaProdutoId(id) {
-  let comando = `select id_detalhe,
+  let comando = `select id_produto                as id,
+                        id_detalhe,
                         id_admin,
                         id_categoria,
                         nm_produto                as produto,
@@ -153,7 +154,7 @@ export async function BuscarImagens(id){
                             bt_disponivel_assinatura = ?
                       where id_produto = ?`
   
-    const [resp] = await conexao.query(comando, [produto.nome, produto.id_admin, produto.id_categoria, produto.promocional, produto.preco, produto.estoque, produto.assinatura, id])
+    const [resp] = await conexao.query(comando, [produto.nome, produto.idAdm, produto.idCategoria, produto.promocional, produto.preco, produto.estoque, produto.disponivelAssinatura, id])
   
     return resp.affectedRows
   }
@@ -170,7 +171,7 @@ export async function BuscarImagens(id){
                             ds_dimensoes = ?
                       where id_detalhe = ?`
   
-    const [resp] = await conexao.query(comando, [detalhes.intensidade, detalhes.docura, detalhes.acidez, detalhes.torra, detalhes.produto, detalhes.marca, detalhes.peso, detalhes.alergia, detalhes.dimensoes, id])
+    const [resp] = await conexao.query(comando, [detalhes.intensidade, detalhes.docura, detalhes.acidez, detalhes.torra, detalhes.descricao, detalhes.marca, detalhes.peso, detalhes.alergia, detalhes.dimensoes, id])
   
     return resp.affectedRows
   }

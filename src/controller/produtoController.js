@@ -142,7 +142,7 @@ produtoEndpoints.get('/detalhes/:id', async (req, resp) => {
 
 produtoEndpoints.put('/produto/:idProduto/detalhes/:idDetalhe', async (req, resp) =>{
     try{
-        const {idProduto: id_produto, idDetalhe: id_detalhe }= Number(req.params)
+        const {idProduto: id_produto, idDetalhe: id_detalhe }= req.params
         const infoDetalhes = {
             intensidade: req.body.intensidade,
             docura: req.body.docura,
@@ -154,7 +154,7 @@ produtoEndpoints.put('/produto/:idProduto/detalhes/:idDetalhe', async (req, resp
             alergia: req.body.alergia,
             dimensoes: req.body.dimensoes
         };
-    
+        console.log(infoDetalhes.descricao);
         const respostaDetalhes = await AlterarDetalhesProduto(infoDetalhes, id_detalhe);
         if(respostaDetalhes !== 1)
             throw new Error('Não foi possivel alterar os detalhes do produto')
