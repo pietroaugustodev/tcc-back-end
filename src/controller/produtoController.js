@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { cadastrarDetalhes, cadastrarProduto, cadastrarImagens, BuscarImagens, deletarProduto, deletarDetalhes, AlterarImagens, BuscarProdutos, BuscarIdCategoria, BuscarIdAdm, BuscaProdutoId, deletarImagens, BuscaDetalhesId, AlterarDetalhesProduto, AlterarProduto } from '../repository/produtoRepository.js';
+import { cadastrarDetalhes, cadastrarProduto, cadastrarImagens, BuscarImagens, deletarProduto, deletarDetalhes, AlterarImagens, BuscarProdutos, BuscarIdCategoria, BuscarIdAdm, BuscaProdutoId, deletarImagens, BuscaDetalhesId, AlterarDetalhesProduto, AlterarProduto, DeletarImagens } from '../repository/produtoRepository.js';
 
 const produtoEndpoints = Router();
 
@@ -195,16 +195,14 @@ produtoEndpoints.put('/produto/:idProduto/detalhes/:idDetalhe', async (req, resp
 
 produtoEndpoints.put('/:id/imagens', async (req, resp) => {
     try{
-        const { idProduto, caminho} = req.body;
-        if(!idProduto || isNaN(idProduto) || idProduto === 0)
-            throw new Error('Id do produto inválido ou indefinido')
-        if(!caminho)
-            throw new Error('Caminho indefinido')
+        const {deletar} = req.body
+        for(let item of deletar){
+            console.log(item);
+            const resposta = await DeletarImagens(item)
+            if(resposta !== 1)
+                throw new Error('Não foi possivel alterar a imagem de id ' + item)
+        }
 
-        const resposta = await AlterarImagens(idProduto, caminho)
-
-        if(resposta !== 1)
-            throw new Error('Não foi possivel alterar as imagens')
         resp.status(204).send()
     }
     catch(err){

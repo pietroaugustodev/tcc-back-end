@@ -133,14 +133,25 @@ export async function BuscaDetalhesId(id) {
 }
 
 export async function BuscarImagens(id){
-    const comando = `select id_produto,
-                            ds_caminho  as caminho
+    const comando = `select id_produto_img  as id,
+                            id_produto,
+                            ds_caminho      as caminho
                        from tb_produto_imagem
                       where id_produto = ?`
 
     const [resp] = await conexao.query(comando, [id])
 
     return resp
+}
+
+export async function DeletarImagens(id){
+  const comando = `delete 
+                     from tb_produto_imagem
+                    where id_produto_img = ?`
+
+  const [resp] = await conexao.query(comando, [id])
+
+  return resp.affectedRows
 }
   
   export async function AlterarProduto(produto, id){
