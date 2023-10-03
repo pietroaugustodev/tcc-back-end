@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { cadastrarDetalhes, cadastrarProduto, cadastrarImagens, BuscarImagens, deletarProduto, deletarDetalhes, AlterarImagens, BuscarProdutos, BuscarIdCategoria, BuscarIdAdm, BuscaProdutoId, deletarImagens, BuscaDetalhesId, AlterarDetalhesProduto, AlterarProduto, DeletarImagens } from '../repository/produtoRepository.js';
+import { cadastrarDetalhes, cadastrarProduto, cadastrarImagens, BuscarImagens, deletarProduto, deletarDetalhes, BuscarProdutos, BuscarIdCategoria, BuscarIdAdm, BuscaProdutoId,BuscaDetalhesId, AlterarDetalhesProduto, AlterarProduto, deletarImagem, deletarImagensPorProduto, buscarAdms } from '../repository/produtoRepository.js';
 
 const produtoEndpoints = Router();
 
@@ -78,6 +78,19 @@ produtoEndpoints.get('/produtos', async (req, resp) => {
             resposta[cont].categoria = await BuscarIdCategoria(resposta[cont].id_categoria)
         }
         
+        resp.send(resposta)
+    }
+    catch(err){
+        resp.status(500).send({
+            erro: err.message
+        })
+    }
+})
+
+produtoEndpoints.get('/adms', async (req, resp) => {
+    try{
+        const resposta = await buscarAdms()
+
         resp.send(resposta)
     }
     catch(err){
@@ -198,7 +211,7 @@ produtoEndpoints.put('/:id/imagens', async (req, resp) => {
         const {deletar} = req.body
         for(let item of deletar){
             console.log(item);
-            const resposta = await DeletarImagens(item)
+            const resposta = await deletarImagem(item)
             if(resposta !== 1)
                 throw new Error('Não foi possivel alterar a imagem de id ' + item)
         }
@@ -217,7 +230,7 @@ produtoEndpoints.put('/:id/imagens', async (req, resp) => {
 
 produtoEndpoints.delete('/deletar/produto', async (req, resp) => {
     try{
-        const {idDetalhe, idProduto} = req.query
+        const {idDetalhe, idProduto} = req.body
         console.log(idDetalhe);
         console.log(idProduto);
         if(!idProduto || idProduto === 0 || isNaN(idProduto))
@@ -225,7 +238,7 @@ produtoEndpoints.delete('/deletar/produto', async (req, resp) => {
         if(!idDetalhe || idDetalhe === 0 || isNaN(idDetalhe))
             throw new Error('id do detalhe não identificado ou inválido')
 
-        const respostaImagens = await deletarImagens(idProduto)
+        const respostaImagens = await deletarImagensPorProduto(idProduto)
         const respostaDetalhes = await deletarDetalhes(idDetalhe)
         const respostaProduto = await deletarProduto(idProduto)
 

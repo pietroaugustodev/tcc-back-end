@@ -94,6 +94,21 @@ export async function BuscarIdAdm(id){
   return resp[0].usuario
 }
 
+export async function buscarAdms(){
+  const comando = `select 	id_admin	as id,
+                            nm_usuario	as usuario,
+                            img_adm		as img,
+                            ds_email	as email
+                     from   tb_admin`
+
+  const [resp]= await conexao.query(comando, [])
+
+  return resp
+}
+
+export async function buscarCategorias(){
+  const comando = ``
+}
 
 // Alteração 
 
@@ -144,7 +159,7 @@ export async function BuscarImagens(id){
     return resp
 }
 
-export async function DeletarImagens(id){
+export async function deletarImagem(id){
   const comando = `delete 
                      from tb_produto_imagem
                     where id_produto_img = ?`
@@ -219,7 +234,7 @@ export async function deletarDetalhes(id){
   return resp.affectedRows
 }
 
-export async function deletarImagens(id){
+export async function deletarImagensPorProduto(id){
   const comando = `delete 
                      from tb_produto_imagem
                     where id_produto = ?`
