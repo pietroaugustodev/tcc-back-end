@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { cadastrarDetalhes, cadastrarProduto, cadastrarImagens, BuscarImagens, deletarProduto, deletarDetalhes, BuscarProdutos, BuscarIdCategoria, BuscarIdAdm, BuscaProdutoId,BuscaDetalhesId, AlterarDetalhesProduto, AlterarProduto, deletarImagem, deletarImagensPorProduto, buscarAdms } from '../repository/produtoRepository.js';
+import { cadastrarDetalhes, cadastrarProduto, cadastrarImagens, BuscarImagens, deletarProduto, deletarDetalhes, BuscarProdutos, BuscarIdCategoria, BuscarIdAdm, BuscaProdutoId,BuscaDetalhesId, AlterarDetalhesProduto, AlterarProduto, deletarImagem, deletarImagensPorProduto, buscarAdms, buscarCategorias } from '../repository/produtoRepository.js';
 
 const produtoEndpoints = Router();
 
@@ -90,6 +90,19 @@ produtoEndpoints.get('/produtos', async (req, resp) => {
 produtoEndpoints.get('/adms', async (req, resp) => {
     try{
         const resposta = await buscarAdms()
+
+        resp.send(resposta)
+    }
+    catch(err){
+        resp.status(500).send({
+            erro: err.message
+        })
+    }
+})
+
+produtoEndpoints.get('/categorias', async (req, resp) => {
+    try{
+        const resposta = await buscarCategorias()
 
         resp.send(resposta)
     }

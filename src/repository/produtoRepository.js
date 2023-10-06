@@ -107,7 +107,14 @@ export async function buscarAdms(){
 }
 
 export async function buscarCategorias(){
-  const comando = ``
+  const comando = `select 	id_categoria		as id,
+                            nm_categoria		as nome,
+                            img_categoria		as img
+                     from   tb_categoria`
+
+  const [resp] = await conexao.query(comando, [])
+
+  return resp
 }
 
 // Alteração 
