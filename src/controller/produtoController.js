@@ -244,9 +244,7 @@ produtoEndpoints.put('/:id/imagens', async (req, resp) => {
 produtoEndpoints.delete('/deletar/produto', async (req, resp) => {
     try{
         const {idDetalhe, idProduto} = req.body
-        console.log(req.body);
-        // console.log(idDetalhe);
-        // console.log(idProduto);
+
         if(!idProduto || idProduto === 0 || isNaN(idProduto))
             throw new Error('Id do produto não identificado ou inválido')
         if(!idDetalhe || idDetalhe === 0 || isNaN(idDetalhe))
@@ -258,11 +256,8 @@ produtoEndpoints.delete('/deletar/produto', async (req, resp) => {
 
         if(respostaProduto !== 1)
             throw new Error('Não foi possivel excluir o produto')
-        
         if(respostaDetalhes !== 1)
             throw new Error('Não foi possivel excluir os detalhes')
-
-            
         if(respostaImagens !== 1)
             throw new Error('Não foi possivel excluir as imagens')
 
