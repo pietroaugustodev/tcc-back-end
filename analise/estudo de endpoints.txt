@@ -74,3 +74,22 @@ response{
     dt_cadastro
 }
 
+------------------------------------------------------------------------------------------------------------------------
+
+GET         '/filtro/produtos/adm/:id'
+
+request{
+    adm: id
+}
+
+response{
+    id_produto                as id,
+    id_detalhe,
+    id_admin,
+    id_categoria,
+    nm_produto                as produto,
+    vl_preco                  as preco,
+    vl_preco_promocional      as promocao,
+    bt_disponivel_assinatura  as assinatura,
+    qtd_estoque               as estoque
+}
