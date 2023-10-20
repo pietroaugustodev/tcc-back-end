@@ -285,7 +285,8 @@ produtoEndpoints.put('/:id/imagens', async (req, resp) => {
 produtoEndpoints.delete('/deletar/produto', async (req, resp) => {
     try{
         const {idDetalhe, idProduto} = req.body
-
+        console.log(idDetalhe);
+        console.log(idProduto);
         if(!idProduto || idProduto === 0 || isNaN(idProduto))
             throw new Error('Id do produto não identificado ou inválido')
         if(!idDetalhe || idDetalhe === 0 || isNaN(idDetalhe))

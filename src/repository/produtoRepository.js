@@ -278,7 +278,7 @@ export async function deletarImagem(id){
   export async function deletarProduto(id){
     const comando = `delete 
                        from tb_produto
-	                    where id_produto = ?;`
+	                    where id_produto = ?`
 
     const [resp] =  await conexao.query(comando, [id])
  
@@ -288,7 +288,7 @@ export async function deletarImagem(id){
 export async function deletarDetalhes(id){
   const comando = `delete 
                      from tb_detalhes
-                    where id_detalhe = ?;`
+                    where id_detalhe = ?`
 
   const [resp] =  await conexao.query(comando, [id])
 
