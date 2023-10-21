@@ -27,11 +27,7 @@ insert into tb_admin(ds_email, nm_usuario, ds_senha, img_adm)
 
 -- Inserindo categorias
 insert into tb_categoria(nm_categoria, img_categoria)
-				values('Filtros', '/assets/images/categorias/filtros.webp');
-insert into tb_categoria(nm_categoria, img_categoria)
-				values('Acessórios', '/assets/images/categorias/acessorios.png');
-insert into tb_categoria(nm_categoria, img_categoria)
-				values('Grãos', '/assets/images/categorias/graosz-cat.png');
+				values('Café em grãos', '/assets/images/categorias/graosz-cat.png');
 insert into tb_categoria(nm_categoria, img_categoria)
 				values('Café em pó', '/assets/images/categorias/poo-cat.png');
 insert into tb_categoria(nm_categoria, img_categoria)
@@ -39,6 +35,10 @@ insert into tb_categoria(nm_categoria, img_categoria)
 insert into tb_categoria(nm_categoria, img_categoria)
 				values('Combos', '/assets/images/categorias/cat-graoss.png');
 insert into tb_categoria(nm_categoria, img_categoria)
-				values('Moedores', '/assets/images/categorias/moedores.webp');
+				values('Filtros', '/assets/images/categorias/filtros.webp');
 insert into tb_categoria(nm_categoria, img_categoria)
 				values('Cápsulas', '/assets/images/categorias/capsulas.webp');                
+insert into tb_categoria(nm_categoria, img_categoria)
+				values('Moedores', '/assets/images/categorias/moedores.webp');
+insert into tb_categoria(nm_categoria, img_categoria)
+				values('Acessórios', '/assets/images/categorias/acessorios.jpg');        

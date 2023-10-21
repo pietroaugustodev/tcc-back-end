@@ -94,7 +94,7 @@ export async function BuscarIdAdm(id){
   return resp[0].usuario
 }
 
-export async function buscarAdms(){
+export async function buscarTodosAdms(){
   const comando = `select 	id_admin	as id,
                             nm_usuario	as usuario,
                             img_adm		as img,
@@ -114,6 +114,60 @@ export async function buscarCategorias(){
 
   const [resp] = await conexao.query(comando, [])
 
+  return resp
+}
+
+export async function filtrarProdutosPorAdm(idAdm){
+  const comando = `select id_produto                as id,
+                          id_detalhe,
+                          id_admin,
+                          id_categoria,
+                          nm_produto                as produto,
+                          vl_preco                  as preco,
+                          vl_preco_promocional      as promocao,
+                          bt_disponivel_assinatura  as assinatura,
+                          qtd_estoque               as estoque
+                          from tb_produto
+                    where id_admin = ?`
+  
+  const [resp] = await conexao.query(comando, [idAdm])
+
+  return resp
+}
+
+export async function ordenarProdutosPorEstoque() {
+  const comando = `select id_produto    as id,
+                          id_detalhe,
+                          id_admin,
+                          id_categoria,
+                          nm_produto                as produto,
+                          vl_preco                  as preco,
+                          vl_preco_promocional      as promocao,
+                          bt_disponivel_assinatura  as assinatura,
+                          qtd_estoque               as estoque
+                          from  tb_produto
+                   order by qtd_estoque desc`
+  
+  const [resp] = await conexao.query(comando)
+
+  return resp
+}
+
+export async function filtrarProdutosPorCategorias(idCategoria){
+  const comando = `select id_produto                as id,
+                          id_detalhe,
+                          id_admin,
+                          id_categoria,
+                          nm_produto                as produto,
+                          vl_preco                  as preco,
+                          vl_preco_promocional      as promocao,
+                          bt_disponivel_assinatura  as assinatura,
+                          qtd_estoque               as estoque
+                          from tb_produto
+                    where id_categoria = ?`
+
+  const [resp]= await conexao.query(comando, [idCategoria])
+  
   return resp
 }
 
@@ -224,7 +278,7 @@ export async function deletarImagem(id){
   export async function deletarProduto(id){
     const comando = `delete 
                        from tb_produto
-	                    where id_produto = ?;`
+	                    where id_produto = ?`
 
     const [resp] =  await conexao.query(comando, [id])
  
@@ -234,7 +288,7 @@ export async function deletarImagem(id){
 export async function deletarDetalhes(id){
   const comando = `delete 
                      from tb_detalhes
-                    where id_detalhe = ?;`
+                    where id_detalhe = ?`
 
   const [resp] =  await conexao.query(comando, [id])
 
