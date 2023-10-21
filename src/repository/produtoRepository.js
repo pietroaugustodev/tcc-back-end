@@ -1,5 +1,7 @@
 import conexao from './connection.js'
 
+
+
 // Cadastrando
 export async function teste() {
     const sql = `select id_admin    as id
@@ -54,6 +56,21 @@ export async function cadastrarImagens (info) {
     const resposta = conexao.query(sql, [info.idProduto, info.caminho]);
     const dados = resposta[0];
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 // Buscas
 
@@ -134,25 +151,6 @@ export async function filtrarProdutosPorAdm(idAdm){
 
   return resp
 }
-
-export async function ordenarProdutosPorEstoque() {
-  const comando = `select id_produto    as id,
-                          id_detalhe,
-                          id_admin,
-                          id_categoria,
-                          nm_produto                as produto,
-                          vl_preco                  as preco,
-                          vl_preco_promocional      as promocao,
-                          bt_disponivel_assinatura  as assinatura,
-                          qtd_estoque               as estoque
-                          from  tb_produto
-                   order by qtd_estoque desc`
-  
-  const [resp] = await conexao.query(comando)
-
-  return resp
-}
-
 export async function filtrarProdutosPorCategorias(idCategoria){
   const comando = `select id_produto                as id,
                           id_detalhe,
@@ -170,6 +168,142 @@ export async function filtrarProdutosPorCategorias(idCategoria){
   
   return resp
 }
+
+export async function ordenarProdutosPorEstoqueDecrescente() {
+  const comando = `select id_produto    as id,
+                          id_detalhe,
+                          id_admin,
+                          id_categoria,
+                          nm_produto                as produto,
+                          vl_preco                  as preco,
+                          vl_preco_promocional      as promocao,
+                          bt_disponivel_assinatura  as assinatura,
+                          qtd_estoque               as estoque
+                          from  tb_produto
+                   order by qtd_estoque desc`
+  
+  const [resp] = await conexao.query(comando)
+
+  return resp
+} 
+
+export async function ordenarProdutosPorEstoqueCrescente(){
+  const comando = `   select  id_produto    as id,
+                              id_detalhe,
+                              id_admin,
+                              id_categoria,
+                              nm_produto                as produto,
+                              vl_preco                  as preco,
+                              vl_preco_promocional      as promocao,
+                              bt_disponivel_assinatura  as assinatura,
+                              qtd_estoque               as estoque
+                              from  tb_produto
+                    order by  qtd_estoque`
+
+  const [resp] = await conexao.query(comando)
+
+  return resp
+}
+
+export async function ordenarProdutosPorPrecoDecrescente() {
+  const comando =   ` select  id_produto    as id,
+                              id_detalhe,
+                              id_admin,
+                              id_categoria,
+                              nm_produto                as produto,
+                              vl_preco                  as preco,
+                              vl_preco_promocional      as promocao,
+                              bt_disponivel_assinatura  as assinatura,
+                              qtd_estoque               as estoque
+                              from  tb_produto
+                    order by  vl_preco desc`
+
+  const [resp] = await conexao.query(comando)
+
+  return resp;
+}
+
+// export async function ordenarProdutosPorColuna(coluna) {
+//   const comando =   ` select  id_produto    as id,
+//                               id_detalhe,
+//                               id_admin,
+//                               id_categoria,
+//                               nm_produto                as produto,
+//                               vl_preco                  as preco,
+//                               vl_preco_promocional      as promocao,
+//                               bt_disponivel_assinatura  as assinatura,
+//                               qtd_estoque               as estoque
+//                               from  tb_produto
+//                     order by  ?`
+
+//   const [resp] = await conexao.query(comando, [coluna])
+
+//   return resp;
+// }
+
+export async function ordenarProdutosPorPrecoPromocionalDecrescente() {
+  const comando =    `select  id_produto    as id,
+                              id_detalhe,
+                              id_admin,
+                              id_categoria,
+                              nm_produto                as produto,
+                              vl_preco                  as preco,
+                              vl_preco_promocional      as promocao,
+                              bt_disponivel_assinatura  as assinatura,
+                              qtd_estoque               as estoque
+                              from  tb_produto
+                    order by  vl_preco_promocional desc`
+  
+  const [resp] = await conexao.query(comando)
+
+  return resp;
+}
+
+export async function filtrarProdutosPorDisponibilidadeAssinatura(valor){
+  const comando = ` select  id_produto    as id,
+                              id_detalhe,
+                              id_admin,
+                              id_categoria,
+                              nm_produto                as produto,
+                              vl_preco                  as preco,
+                              vl_preco_promocional      as promocao,
+                              bt_disponivel_assinatura  as assinatura,
+                              qtd_estoque               as estoque
+                              from  tb_produto
+                       where  bt_disponivel_assinatura = ?`
+  
+  const [resp] = await conexao.query(comando, [valor])
+
+  return resp;                       
+}
+
+export async function filtrarProdutosPorIdOuNome(valor) {
+  const comando = ` select  id_produto    as id,
+                              id_detalhe,
+                              id_admin,
+                              id_categoria,
+                              nm_produto                as produto,
+                              vl_preco                  as preco,
+                              vl_preco_promocional      as promocao,
+                              bt_disponivel_assinatura  as assinatura,
+                              qtd_estoque               as estoque
+                              from  tb_produto
+                       where  nm_produto = ?
+                          or  id_produto = ?`
+
+  const [resp] = await conexao.query(comando, [valor, valor])
+
+  return resp          
+}
+
+
+
+
+
+
+
+
+
 
 // Alteração 
 
@@ -273,6 +407,26 @@ export async function deletarImagem(id){
 
     return resp.affectedRows
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
   // Deletando
 
   export async function deletarProduto(id){
