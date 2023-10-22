@@ -1,8 +1,11 @@
 import { Router } from "express";
-import { cadastrarDetalhes, cadastrarProduto, cadastrarImagens, BuscarImagens, deletarProduto, deletarDetalhes, BuscarProdutos, BuscarIdCategoria, BuscarIdAdm, BuscaProdutoId,BuscaDetalhesId, AlterarDetalhesProduto, AlterarProduto, deletarImagem, deletarImagensPorProduto, buscarTodosAdms, buscarCategorias, filtrarProdutosPorAdm, filtrarProdutosPorCategorias } from '../repository/produtoRepository.js';
+import { cadastrarDetalhes, cadastrarProduto, cadastrarImagens, BuscarImagens, deletarProduto, deletarDetalhes, BuscarProdutos, BuscarIdCategoria, BuscarIdAdm, BuscaProdutoId,BuscaDetalhesId, AlterarDetalhesProduto, AlterarProduto, deletarImagem, deletarImagensPorProduto, buscarTodosAdms, buscarCategorias, filtrarProdutosPorAdm, filtrarProdutosPorCategorias,ordenarProdutosPorEstoqueDecrescente, ordenarProdutosPorEstoqueCrescente, ordenarProdutosPorPrecoDecrescente, ordenarProdutosPorPrecoPromocionalDecrescente, filtrarProdutosPorDisponibilidadeAssinatura, filtrarProdutosPorIdOuNome } from '../repository/produtoRepository.js';
+
 
 const produtoEndpoints = Router();
 
+
+// Cadastrando
 produtoEndpoints.post('/imagemproduto', async (req, resp) => {
     try {
         const infoImagem = {
@@ -68,6 +71,29 @@ produtoEndpoints.post('/produto', async (req, resp) => {
     }
 });
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 // Buscando
 
 produtoEndpoints.get('/produtos', async (req, resp) => {
@@ -76,6 +102,8 @@ produtoEndpoints.get('/produtos', async (req, resp) => {
         for(let cont = 0; cont < resposta.length; cont ++){
             resposta[cont].admin = await BuscarIdAdm(resposta[cont].id_admin) 
             resposta[cont].categoria = await BuscarIdCategoria(resposta[cont].id_categoria)
+            const respImagens = await BuscarImagens(resposta[cont].id)
+            resposta[cont].imagem = respImagens[0].caminho
         }
         
         resp.send(resposta)
@@ -117,8 +145,13 @@ produtoEndpoints.get('/filtro/produtos/adm/:id', async (req, resp) =>{
     try{
         const {id} = req.params
 
-        const produtosFiltrados = await filtrarProdutosPorAdm(id)
-
+        let produtosFiltrados = await filtrarProdutosPorAdm(id)
+        for(let cont = 0; cont < produtosFiltrados.length; cont ++){
+            produtosFiltrados[cont].admin = await BuscarIdAdm(produtosFiltrados[cont].id_admin) 
+            produtosFiltrados[cont].categoria = await BuscarIdCategoria(produtosFiltrados[cont].id_categoria)
+            const respImagens = await BuscarImagens(produtosFiltrados[cont].id)
+            produtosFiltrados[cont].imagem = respImagens[0].caminho
+        }
         resp.send(produtosFiltrados)
     }
     catch(err){
@@ -132,7 +165,14 @@ produtoEndpoints.get('/filtro/produtos/categorias/:id', async (req, resp) => {
     try {
         const {id} = req.params
 
-        const produtosFiltrados = await filtrarProdutosPorCategorias(id)
+        let produtosFiltrados = await filtrarProdutosPorCategorias(id)
+
+        for(let cont = 0; cont < produtosFiltrados.length; cont ++){
+            produtosFiltrados[cont].admin = await BuscarIdAdm(produtosFiltrados[cont].id_admin) 
+            produtosFiltrados[cont].categoria = await BuscarIdCategoria(produtosFiltrados[cont].id_categoria)
+            const respImagens = await BuscarImagens(produtosFiltrados[cont].id)
+            produtosFiltrados[cont].imagem = respImagens[0].caminho
+        }
 
         resp.send(produtosFiltrados)
     }
@@ -143,9 +183,59 @@ produtoEndpoints.get('/filtro/produtos/categorias/:id', async (req, resp) => {
     }
 })
 
-produtoEndpoints.get('/filtro/produtos/ordenar/:nomeColuna', async (req, resp) => {
+produtoEndpoints.get('/filtro/produtos/ordenar/:coluna', async (req, resp) => {
     try{
+        const {coluna} = req.params
+        let resposta = []
 
+        if(coluna === 'qtd_estoque desc'){
+            resposta = await ordenarProdutosPorEstoqueDecrescente()
+        }
+        else if(coluna === 'qtd_estoque'){
+            resposta = await ordenarProdutosPorEstoqueCrescente()
+        }
+        else if(coluna === 'vl_preco'){
+            resposta = await ordenarProdutosPorPrecoDecrescente()
+        }
+        else if(coluna === 'vl_preco_promocional'){
+            resposta = await ordenarProdutosPorPrecoPromocionalDecrescente()
+        }
+        for(let cont = 0; cont < resposta.length; cont ++){
+            resposta[cont].admin = await BuscarIdAdm(resposta[cont].id_admin) 
+            resposta[cont].categoria = await BuscarIdCategoria(resposta[cont].id_categoria)
+            const respImagens = await BuscarImagens(resposta[cont].id)
+            resposta[cont].imagem = respImagens[0].caminho
+        }
+        resp.send(resposta)
+    }   
+    catch(err){
+        resp.status(500).send({
+            erro: err.message
+        })
+    }
+})
+
+produtoEndpoints.get('/filtro/produtos/disponivelAssinatura/:valor', async (req, resp) => {
+    try{
+        const {valor} = req.params
+
+        let valorBoolean = ''
+        if(valor === 'false'){
+            valorBoolean = Boolean(!valor)
+          }
+          else{
+            valorBoolean = Boolean(valor)
+        }
+        
+        const produtosFiltrados = await filtrarProdutosPorDisponibilidadeAssinatura(valorBoolean)
+        for(let cont = 0; cont < produtosFiltrados.length; cont ++){
+            produtosFiltrados[cont].admin = await BuscarIdAdm(produtosFiltrados[cont].id_admin) 
+            produtosFiltrados[cont].categoria = await BuscarIdCategoria(produtosFiltrados[cont].id_categoria)
+            const respImagens = await BuscarImagens(produtosFiltrados[cont].id)
+            produtosFiltrados[cont].imagem = respImagens[0].caminho
+        }
+
+        resp.send(produtosFiltrados)
     }
     catch(err){
         resp.status(500).send({
@@ -153,6 +243,48 @@ produtoEndpoints.get('/filtro/produtos/ordenar/:nomeColuna', async (req, resp) =
         })
     }
 })
+
+produtoEndpoints.get('/filtro/produtos/pesquisa/:valor', async (req, resp) => {
+    try{
+        const {valor} = req.params
+
+        const resposta = await filtrarProdutosPorIdOuNome(valor)
+
+        resp.send(resposta)
+
+    }
+    catch(err){
+
+    }
+})
+
+// produtoEndpoints.get('/filtro/produtos/ordenar/:coluna', async (req, resp) => {
+//     try{
+//         const {coluna} = req.params
+
+
+//         const resposta = await ordenarProdutosPorColuna(coluna)
+        
+//         resp.send(resposta)
+//     }   
+//     catch(err){
+//         resp.status(500).send({
+//             erro: err.message
+//         })
+//     }
+// })
+
+
+
+
+
+
+
+
+
+
+
+
 
 // Alterando
 
@@ -280,13 +412,23 @@ produtoEndpoints.put('/:id/imagens', async (req, resp) => {
 })
 
 
+
+
+
+
+
+
+
+
+
+
+
 // Deletando
 
 produtoEndpoints.delete('/deletar/produto', async (req, resp) => {
     try{
         const {idDetalhe, idProduto} = req.body
-        console.log(idDetalhe);
-        console.log(idProduto);
+
         if(!idProduto || idProduto === 0 || isNaN(idProduto))
             throw new Error('Id do produto não identificado ou inválido')
         if(!idDetalhe || idDetalhe === 0 || isNaN(idDetalhe))
