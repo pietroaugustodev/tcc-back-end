@@ -194,15 +194,15 @@ produtoEndpoints.get('/filtro/produtos/ordenar/:coluna', async (req, resp) => {
         else if(coluna === 'qtd_estoque'){
             resposta = await ordenarProdutosPorEstoqueCrescente()
         }
-        else if(coluna === 'vl_preco'){
+        else if(coluna === 'vl_preco desc'){
             resposta = await ordenarProdutosPorPrecoDecrescente()
         }
-        else if(coluna === 'vl_preco_promocional'){
+        else if(coluna === 'vl_preco_promocional desc'){
             resposta = await ordenarProdutosPorPrecoPromocionalDecrescente()
         }
         for(let cont = 0; cont < resposta.length; cont ++){
             resposta[cont].admin = await BuscarIdAdm(resposta[cont].id_admin) 
-            resposta[cont].categoria = await BuscarIdCategoria(resposta[cont].id_categoria)
+            resposta[cont].categoria = await BuscarIdCategoria(resposta[cont].id_categoria) 
             const respImagens = await BuscarImagens(resposta[cont].id)
             resposta[cont].imagem = respImagens[0].caminho
         }
@@ -248,13 +248,21 @@ produtoEndpoints.get('/filtro/produtos/pesquisa/:valor', async (req, resp) => {
     try{
         const {valor} = req.params
 
+
         const resposta = await filtrarProdutosPorIdOuNome(valor)
 
+        for(let cont = 0; cont < resposta.length; cont ++){
+            resposta[cont].admin = await BuscarIdAdm(resposta[cont].id_admin) 
+            resposta[cont].categoria = await BuscarIdCategoria(resposta[cont].id_categoria) 
+            const respImagens = await BuscarImagens(resposta[cont].id)
+            resposta[cont].imagem = respImagens[0].caminho
+        }
         resp.send(resposta)
-
     }
     catch(err){
-
+        resp.status(500).send({
+            erro: err.message
+        })
     }
 })
 
