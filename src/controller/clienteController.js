@@ -69,9 +69,12 @@ clienteEndpoints.post('/cliente/login', async (req, resp) => {
         if(!email)
             throw new Error('Email obrigatório')
         if(!senha)
-            throw new Error('Senha obrigatório')
+            throw new Error('Senha obrigatória')
 
         const resposta = await Login(email, senha)
+
+        if(!resposta)
+            throw new Error('Login ou senha inválidos')
 
         resp.send(resposta)
     }

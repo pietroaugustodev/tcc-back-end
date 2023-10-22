@@ -215,11 +215,19 @@ produtoEndpoints.get('/filtro/produtos/ordenar/:coluna', async (req, resp) => {
     }
 })
 
-produtoEndpoints.get('/filtro/produtos/disponivelAssinatura', async (req, resp) => {
+produtoEndpoints.get('/filtro/produtos/disponivelAssinatura/:valor', async (req, resp) => {
     try{
-        const {valor} = req.body
+        const {valor} = req.params
 
-        const produtosFiltrados = await filtrarProdutosPorDisponibilidadeAssinatura(valor)
+        let valorBoolean = ''
+        if(valor === 'false'){
+            valorBoolean = Boolean(!valor)
+          }
+          else{
+            valorBoolean = Boolean(valor)
+        }
+        
+        const produtosFiltrados = await filtrarProdutosPorDisponibilidadeAssinatura(valorBoolean)
         for(let cont = 0; cont < produtosFiltrados.length; cont ++){
             produtosFiltrados[cont].admin = await BuscarIdAdm(produtosFiltrados[cont].id_admin) 
             produtosFiltrados[cont].categoria = await BuscarIdCategoria(produtosFiltrados[cont].id_categoria)
@@ -265,20 +273,6 @@ produtoEndpoints.get('/filtro/produtos/pesquisa/:valor', async (req, resp) => {
 //         })
 //     }
 // })
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
@@ -434,8 +428,7 @@ produtoEndpoints.put('/:id/imagens', async (req, resp) => {
 produtoEndpoints.delete('/deletar/produto', async (req, resp) => {
     try{
         const {idDetalhe, idProduto} = req.body
-        console.log(idDetalhe);
-        console.log(idProduto);
+
         if(!idProduto || idProduto === 0 || isNaN(idProduto))
             throw new Error('Id do produto não identificado ou inválido')
         if(!idDetalhe || idDetalhe === 0 || isNaN(idDetalhe))
