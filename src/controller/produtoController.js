@@ -443,8 +443,8 @@ produtoEndpoints.delete('/deletar/produto', async (req, resp) => {
             throw new Error('id do detalhe não identificado ou inválido')
 
         const respostaImagens = await deletarImagensPorProduto(idProduto)
-        const respostaDetalhes = await deletarDetalhes(idDetalhe)
         const respostaProduto = await deletarProduto(idProduto)
+        const respostaDetalhes = await deletarDetalhes(idDetalhe)
 
         if(respostaProduto !== 1)
             throw new Error('Não foi possivel excluir o produto')
