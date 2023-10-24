@@ -1,5 +1,5 @@
 import {Router } from "express";
-import { criarCombo } from "../repository/compoRepository.js";
+import { criarCombo } from "../repository/comboRepository.js";
 
 const comboEndpoints = Router();
 
