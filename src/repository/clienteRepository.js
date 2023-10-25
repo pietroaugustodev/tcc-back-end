@@ -77,7 +77,8 @@ export async function Login(email, senha){
 }
 
 export async function buscarTodosEnderecos(idCliente){
-    const comando = `select id_cliente,
+    const comando = `select id_endereco     as id,
+                            id_cliente,
                             ds_cep			as cep,
                             ds_rua			as rua,
                             ds_cidade		as cidade,
