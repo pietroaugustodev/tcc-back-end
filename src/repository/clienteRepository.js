@@ -1,9 +1,11 @@
 import conexao from './connection.js'
 
+// Inserindo
+
 export async function cadastro(cliente) {
     const comando = `insert into tb_cliente(nm_cliente, ds_telefone, ds_cpf, dt_nascimento, ds_email, ds_senha, dt_cadastro)
-                                values(?, ?, ?, ?, ?, ?, now());`
-
+    values(?, ?, ?, ?, ?, ?, now());`
+    
     const [resp] = await conexao.query(comando, [cliente.nome, cliente.telefone, cliente.cpf, cliente.nascimento, cliente.email, cliente.senha])
     
     const clienteNovo = {
@@ -19,16 +21,6 @@ export async function cadastro(cliente) {
     return clienteNovo
 }
 
-export async function BuscarDataCadastro(id) {
-    const comando = `select dt_cadastro 
-                       from tb_cliente 
-                      where id_cliente = ?`
- 
-    const [resp] = await conexao.query(comando, [id])
-
-    return resp[0].dt_cadastro
-}
-
 export async function cadastroEndereco(endereco){
     const comando = `insert into tb_endereco(id_cliente, ds_cep, ds_rua, ds_cidade, ds_complemento, nr_endereco)
                                     values  (?, ?, ?, ?, ?, ?)`
@@ -41,6 +33,17 @@ export async function cadastroEndereco(endereco){
     return endereco
 }
 
+// Buscando
+
+export async function BuscarDataCadastro(id) {
+    const comando = `select dt_cadastro 
+                       from tb_cliente 
+                      where id_cliente = ?`
+ 
+    const [resp] = await conexao.query(comando, [id])
+
+    return resp[0].dt_cadastro
+}
 
 export async function BuscarRepetido(busca){
     const comando = `select ds_email    as email,
@@ -71,4 +74,50 @@ export async function Login(email, senha){
     const [resp] = await conexao.query(comando, [email, senha])
 
     return resp[0]
+}
+
+export async function buscarTodosEnderecos(idCliente){
+    const comando = `select id_endereco     as id,
+                            id_cliente,
+                            ds_cep			as cep,
+                            ds_rua			as rua,
+                            ds_cidade		as cidade,
+                            ds_complemento	as complemento,
+                            nr_endereco		as numero
+                       from tb_endereco
+                      where	id_cliente = ?`
+
+    const [resp] = await conexao.query(comando, [idCliente])
+
+    return resp;
+}
+
+
+
+// Alterando 
+
+export async function alterarEndereco(id, endereco){
+    const comando = `update tb_endereco
+                        set ds_cep         = ?,
+                            ds_rua         = ?,
+                            ds_cidade	   = ? ,
+                            ds_complemento = ?,
+                            nr_endereco    = ?
+                      where id_endereco      = ?`
+    
+    const [resp] = await conexao.query(comando, [endereco.cep, endereco.rua, endereco.cidade, endereco.complemento, endereco.numero, id])
+
+    return resp.affectedRows
+}
+
+// Deletando
+
+export async function deletarEndereco(id){
+    const comando = `delete 
+                       from tb_endereco 
+                      where id_endereco = ?`
+
+    const [resp] = await conexao.query(comando, [id])
+
+    return resp.affectedRows;
 }

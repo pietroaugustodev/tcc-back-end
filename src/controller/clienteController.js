@@ -1,8 +1,11 @@
 import { Router } from "express";
-import { BuscarRepetido, Login, cadastro, cadastroEndereco } from "../repository/clienteRepository.js";
+import { BuscarRepetido, Login, alterarEndereco, buscarTodosEnderecos, cadastro, cadastroEndereco, deletarEndereco } from "../repository/clienteRepository.js";
 
 
 const clienteEndpoints = Router()
+
+
+// Inserindo 
 
 clienteEndpoints.post('/cliente', async (req, resp) =>{
     try{
@@ -62,6 +65,7 @@ clienteEndpoints.post('/endereco/:num', async (req, resp) => {
 })
 
 
+// Buscando 
 
 clienteEndpoints.post('/cliente/login', async (req, resp) => {
     try{
@@ -84,4 +88,77 @@ clienteEndpoints.post('/cliente/login', async (req, resp) => {
         })
     }
 })
+
+
+clienteEndpoints.get('/enderecos/:id', async (req, resp) => {
+    try {
+        const {id} = req.params
+
+        const resposta = await buscarTodosEnderecos(id)
+
+        resp.send(resposta)
+    }
+    catch(err){
+        resp.status(500).send({
+            erro: err.message
+        })
+    }
+})
+
+// Alterando 
+
+clienteEndpoints.put('/endereco/:id', async (req, resp) => {
+    try{
+        const id = Number(req.params.id)
+
+        const endereco = req.body
+
+        if(!id || id === 0 || isNaN(id))
+            throw new Error('Id endereço inválido ou indefinido')
+        if(!endereco.cep)
+            throw new Error('CEP obrigatório')
+        if(!endereco.cidade)
+            throw new Error('CEP obrigatório')
+        if(!endereco.rua)
+            throw new Error('CEP obrigatório')
+        if(!endereco.numero)
+            throw new Error('Número da casa obrigatório')
+
+        const resposta = await alterarEndereco(id, endereco)
+
+        if(resposta !== 1)
+            throw new Error('O endereço não pode ser alterado')
+
+        resp.status(204).send()
+    }
+    catch(err){
+        resp.status(500).send({
+            erro: err.message
+        })
+    }
+})
+
+
+// Deletando
+
+clienteEndpoints.delete('/endereco', async (req, resp) => {
+    try {
+        const id = Number(req.query.id)    
+
+        if(!id || id === 0 || isNaN(id))
+            throw new Error('Id inválido ou indefinido')
+
+        const resposta = await deletarEndereco(id)
+        if(resposta !== 1)
+            throw new Error('Não foi possível deletar o endereço')
+
+        resp.status(204).send()
+    }
+    catch(err){
+        resp.status(500).send({
+            erro: err.message
+        })
+    }
+})
+
 export default clienteEndpoints;

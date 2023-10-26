@@ -115,6 +115,30 @@ produtoEndpoints.get('/produtos', async (req, resp) => {
     }
 })
 
+produtoEndpoints.get('/produtos/:marca', async (req, resp) => {
+    try {
+        const {marca} = req.params
+
+        let produtos = await BuscarProdutos()
+
+        for(let cont = 0; cont < produtos.length ; cont++){
+            let detalhesProduto = await BuscaDetalhesId(produtos[cont].id_detalhe)
+
+            produtos[cont].marca = detalhesProduto.marca
+        }
+
+
+        const produtosFiltradosPorMarca = produtos.filter((item) => item.marca === marca)
+
+        resp.send(produtosFiltradosPorMarca)
+    }
+    catch(err){
+        resp.status(500).send({
+            erro: err.message
+        })
+    }
+})
+
 produtoEndpoints.get('/adms', async (req, resp) => {
     try{
         const resposta = await buscarTodosAdms()    
