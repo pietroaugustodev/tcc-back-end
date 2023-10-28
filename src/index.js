@@ -6,9 +6,11 @@ import clienteEndpoints from './controller/clienteController.js';
 import produtoEndpoints from './controller/produtoController.js';
 import comboEndpoints from './controller/comboController.js';
 import assinaturaEndpoints from './controller/assinaturaController.js';
+import conexao from './repository/connection.js';
 
 const server = express()
 
+console.log('bd');
 server.use(cors())
 server.use(express.json())
 server.use(admEndpoints)
