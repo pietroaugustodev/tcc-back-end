@@ -6,7 +6,7 @@ export async function criarCombo () {
     const [resp] = await conexao.query(sql);
     console.log(resp);
     return resp;
-}
+} 
 
 export async function adicionarItem() {
     const sql = ``;

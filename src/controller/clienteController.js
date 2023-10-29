@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { BuscarRepetido, Login, alterarEndereco, buscarTodosEnderecos, cadastro, cadastroEndereco, deletarEndereco } from "../repository/clienteRepository.js";
+import { buscarTodosCartoes, BuscarRepetido, Login, alterarEndereco, buscarTodosEnderecos, cadastro, cadastroEndereco, deletarEndereco } from "../repository/clienteRepository.js";
 
 
 const clienteEndpoints = Router()
@@ -47,9 +47,9 @@ clienteEndpoints.post('/endereco/:num', async (req, resp) => {
         if(!endereco.cep)
             throw new Error('CEP obrigatório')
         if(!endereco.cidade)
-            throw new Error('CEP obrigatório')
+            throw new Error('CEP incorreto')
         if(!endereco.rua)
-            throw new Error('CEP obrigatório')
+            throw new Error('CEP incorreto')
         if(!endereco.numero)
             throw new Error('Número da casa obrigatório')
 
@@ -105,6 +105,21 @@ clienteEndpoints.get('/enderecos/:id', async (req, resp) => {
     }
 })
 
+clienteEndpoints.get('/cartoes/:id', async (req, resp) => {
+    try {
+        const {id} = req.params
+
+        const resposta = await buscarTodosCartoes(id)
+
+        resp.send(resposta)
+    }
+    catch(err){
+        resp.status(500).send({
+            erro: err.message
+        })
+    }
+})
+
 // Alterando 
 
 clienteEndpoints.put('/endereco/:id', async (req, resp) => {
@@ -115,11 +130,11 @@ clienteEndpoints.put('/endereco/:id', async (req, resp) => {
 
         if(!id || id === 0 || isNaN(id))
             throw new Error('Id endereço inválido ou indefinido')
-        if(!endereco.cep)
-            throw new Error('CEP obrigatório')
         if(!endereco.cidade)
-            throw new Error('CEP obrigatório')
+            throw new Error('CEP incorreto')
         if(!endereco.rua)
+            throw new Error('CEP incorreto')
+        if(!endereco.cep)
             throw new Error('CEP obrigatório')
         if(!endereco.numero)
             throw new Error('Número da casa obrigatório')

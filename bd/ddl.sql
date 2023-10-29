@@ -30,13 +30,6 @@ create table tb_categoria (
 	img_categoria 	varchar(1200) not null
 );
 
-create table tb_produto_imagem (
-	id_produto_img 	int primary key auto_increment,
-	id_produto 		int not null,
-	ds_caminho 		varchar(1200) not null,
-    foreign key (id_produto) references tb_produto(id_produto)
-);
-
 create table tb_produto (
 	id_produto					int primary key auto_increment,
 	id_detalhe					int not null,
@@ -52,6 +45,15 @@ create table tb_produto (
     foreign key (id_categoria) references tb_categoria(id_categoria)
 );
 
+create table tb_produto_imagem (
+	id_produto_img 	int primary key auto_increment,
+	id_produto 		int not null,
+	ds_caminho 		varchar(1200) not null,
+    foreign key (id_produto) references tb_produto(id_produto)
+);
+
+
+
 create table tb_cliente (
 	id_cliente int primary key auto_increment,
 	nm_cliente varchar(200) not null,
@@ -63,7 +65,18 @@ create table tb_cliente (
 	dt_cadastro datetime not null
 );
 
-                      
+                    
+create table tb_endereco (
+	id_endereco int primary key auto_increment,
+	id_cliente int not null,
+	ds_cep varchar(15) not null,
+	ds_rua varchar(200) not null,
+	ds_cidade varchar(100) not null,
+	ds_complemento varchar(200) null,
+	nr_endereco varchar(15) not null,
+    foreign key (id_cliente) references tb_cliente(id_cliente)
+);
+
 create table tb_assinatura (
 	id_assinatura int primary key auto_increment,
 	id_cliente int,
@@ -112,16 +125,6 @@ create table tb_pedido (
 	ds_avaliacao int null,
     foreign key (id_cliente) references tb_cliente(id_cliente),
     foreign key (id_endereco_entrega) references tb_endereco(id_endereco)
-);
-create table tb_endereco (
-	id_endereco int primary key auto_increment,
-	id_cliente int not null,
-	ds_cep varchar(15) not null,
-	ds_rua varchar(200) not null,
-	ds_cidade varchar(100) not null,
-	ds_complemento varchar(200) null,
-	nr_endereco varchar(15) not null,
-    foreign key (id_cliente) references tb_cliente(id_cliente)
 );
 
 
