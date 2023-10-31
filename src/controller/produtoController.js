@@ -128,7 +128,7 @@ produtoEndpoints.get('/produtos/:marca', async (req, resp) => {
         }
 
 
-        const produtosFiltradosPorMarca = produtos.filter((item) => item.marca === marca)
+        const produtosFiltradosPorMarca = produtos.filter((item) => item.marca == marca)
 
         resp.send(produtosFiltradosPorMarca)
     }
