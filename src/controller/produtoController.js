@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { cadastrarDetalhes, cadastrarProduto, cadastrarImagens, BuscarImagens, deletarProduto, deletarDetalhes, BuscarProdutos, BuscarIdCategoria, BuscarIdAdm, BuscaProdutoId,BuscaDetalhesId, AlterarDetalhesProduto, AlterarProduto, deletarImagem, deletarImagensPorProduto, buscarTodosAdms, buscarCategorias, filtrarProdutosPorAdm, filtrarProdutosPorCategorias,ordenarProdutosPorEstoqueDecrescente, ordenarProdutosPorEstoqueCrescente, ordenarProdutosPorPrecoDecrescente, ordenarProdutosPorPrecoPromocionalDecrescente, filtrarProdutosPorDisponibilidadeAssinatura, filtrarProdutosPorIdOuNome } from '../repository/produtoRepository.js';
+import { cadastrarDetalhes, cadastrarProduto, cadastrarImagens, BuscarImagens, deletarProduto, deletarDetalhes, BuscarProdutos, BuscarIdCategoria, BuscarIdAdm, BuscaProdutoId,BuscaDetalhesId, AlterarDetalhesProduto, AlterarProduto, deletarImagem, deletarImagensPorProduto, buscarTodosAdms, buscarCategorias, filtrarProdutosPorAdm, filtrarProdutosPorCategorias,ordenarProdutosPorEstoqueDecrescente, ordenarProdutosPorEstoqueCrescente, ordenarProdutosPorPrecoDecrescente, ordenarProdutosPorPrecoPromocionalDecrescente, filtrarProdutosPorDisponibilidadeAssinatura, filtrarProdutosPorIdOuNome, buscarProdutosPorMarca, buscarProdutoPorDetalhes } from '../repository/produtoRepository.js';
 
 
 const produtoEndpoints = Router();
@@ -121,18 +121,17 @@ produtoEndpoints.get('/produtos/:marca', async (req, resp) => {
     try {
         const {marca} = req.params
 
-        let produtos = await BuscarProdutos()
+        let produtos = []
+        let detalhesProdutosMarca = await buscarProdutosPorMarca(marca)
+    
 
-        for(let cont = 0; cont < produtos.length ; cont++){
-            let detalhesProduto = await BuscaDetalhesId(produtos[cont].id_detalhe)
-
-            produtos[cont].marca = detalhesProduto.marca
+        for(let cont = 0; cont < detalhesProdutosMarca.length ; cont++){
+            let produto = await buscarProdutoPorDetalhes(detalhesProdutosMarca[cont].id_detalhe)
+            produto.detalhes = detalhesProdutosMarca[cont]
+            produtos[cont] = produto
         }
 
-
-        const produtosFiltradosPorMarca = produtos.filter((item) => item.marca == marca)
-
-        resp.send(produtosFiltradosPorMarca)
+        resp.send(produtos)
     }
     catch(err){
         resp.status(500).send({
@@ -175,6 +174,8 @@ produtoEndpoints.get('/filtro/produtos/adm/:id', async (req, resp) =>{
         for(let cont = 0; cont < produtosFiltrados.length; cont ++){
             produtosFiltrados[cont].admin = await BuscarIdAdm(produtosFiltrados[cont].id_admin) 
             produtosFiltrados[cont].categoria = await BuscarIdCategoria(produtosFiltrados[cont].id_categoria)
+            const detalhesProdutos = await BuscaDetalhesId(resposta[cont].id)
+            resposta[cont].detalhes = detalhesProdutos
             const respImagens = await BuscarImagens(produtosFiltrados[cont].id)
             produtosFiltrados[cont].imagem = respImagens[0].caminho
         }
@@ -196,6 +197,8 @@ produtoEndpoints.get('/filtro/produtos/categorias/:id', async (req, resp) => {
         for(let cont = 0; cont < produtosFiltrados.length; cont ++){
             produtosFiltrados[cont].admin = await BuscarIdAdm(produtosFiltrados[cont].id_admin) 
             produtosFiltrados[cont].categoria = await BuscarIdCategoria(produtosFiltrados[cont].id_categoria)
+            const detalhesProdutos = await BuscaDetalhesId(resposta[cont].id)
+            resposta[cont].detalhes = detalhesProdutos
             const respImagens = await BuscarImagens(produtosFiltrados[cont].id)
             produtosFiltrados[cont].imagem = respImagens[0].caminho
         }
@@ -229,6 +232,8 @@ produtoEndpoints.get('/filtro/produtos/ordenar/:coluna', async (req, resp) => {
         for(let cont = 0; cont < resposta.length; cont ++){
             resposta[cont].admin = await BuscarIdAdm(resposta[cont].id_admin) 
             resposta[cont].categoria = await BuscarIdCategoria(resposta[cont].id_categoria) 
+            const detalhesProdutos = await BuscaDetalhesId(resposta[cont].id)
+            resposta[cont].detalhes = detalhesProdutos
             const respImagens = await BuscarImagens(resposta[cont].id)
             resposta[cont].imagem = respImagens[0].caminho
         }
@@ -257,6 +262,8 @@ produtoEndpoints.get('/filtro/produtos/disponivelAssinatura/:valor', async (req,
         for(let cont = 0; cont < produtosFiltrados.length; cont ++){
             produtosFiltrados[cont].admin = await BuscarIdAdm(produtosFiltrados[cont].id_admin) 
             produtosFiltrados[cont].categoria = await BuscarIdCategoria(produtosFiltrados[cont].id_categoria)
+            const detalhesProdutos = await BuscaDetalhesId(resposta[cont].id)
+            resposta[cont].detalhes = detalhesProdutos
             const respImagens = await BuscarImagens(produtosFiltrados[cont].id)
             produtosFiltrados[cont].imagem = respImagens[0].caminho
         }
@@ -280,6 +287,8 @@ produtoEndpoints.get('/filtro/produtos/pesquisa/:valor', async (req, resp) => {
         for(let cont = 0; cont < resposta.length; cont ++){
             resposta[cont].admin = await BuscarIdAdm(resposta[cont].id_admin) 
             resposta[cont].categoria = await BuscarIdCategoria(resposta[cont].id_categoria) 
+            const detalhesProdutos = await BuscaDetalhesId(resposta[cont].id)
+            resposta[cont].detalhes = detalhesProdutos
             const respImagens = await BuscarImagens(resposta[cont].id)
             resposta[cont].imagem = respImagens[0].caminho
         }
