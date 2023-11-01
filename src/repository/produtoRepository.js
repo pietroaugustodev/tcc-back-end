@@ -91,6 +91,24 @@ export async function BuscarProdutos(){
   return resp;
 }
 
+export async function BuscaDetalhesId(id) {
+  let comando = `select id_detalhe,
+                        ds_intensidade 	as intensidade,
+                        ds_docura 		  as docura,
+                        ds_acidez 		  as acidez,
+                        ds_torra 		    as torra,
+                        ds_produto 		  as produto,
+                        ds_marca 		    as marca,
+                        ds_peso 		    as peso,
+                        ds_alergia 		  as alergia,
+                        ds_dimensoes 	  as dimensoes
+                   from tb_detalhes
+                  where id_detalhe = ?`
+  const [resp] = await conexao.query(comando, id)
+
+  return resp[0]
+}
+
 export async function BuscarIdCategoria(id){
   const comando = `select nm_categoria  as categoria
                      from tb_categoria
@@ -319,24 +337,6 @@ export async function BuscaProdutoId(id) {
                         qtd_estoque      			    as estoque
                    from tb_produto
                   where id_produto = ?`
-  const [resp] = await conexao.query(comando, id)
-
-  return resp[0]
-}
-
-export async function BuscaDetalhesId(id) {
-  let comando = `select id_detalhe,
-                        ds_intensidade 	as intensidade,
-                        ds_docura 		  as docura,
-                        ds_acidez 		  as acidez,
-                        ds_torra 		    as torra,
-                        ds_produto 		  as produto,
-                        ds_marca 		    as marca,
-                        ds_peso 		    as peso,
-                        ds_alergia 		  as alergia,
-                        ds_dimensoes 	  as dimensoes
-                   from tb_detalhes
-                  where id_detalhe = ?`
   const [resp] = await conexao.query(comando, id)
 
   return resp[0]
