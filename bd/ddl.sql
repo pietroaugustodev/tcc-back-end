@@ -107,7 +107,7 @@ create table tb_cartoes (
 	ds_validade varchar(10) not null,
 	nr_cartao varchar(50) not null,
     foreign key(id_cliente) references tb_cliente(id_cliente)
-);
+);	
 
 create table tb_pedido (
 	id_pedido int primary key auto_increment,

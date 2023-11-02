@@ -91,6 +91,43 @@ export async function BuscarProdutos(){
   return resp;
 }
 
+export async function buscarProdutosPorMarca(marca){
+  const comando = `select id_detalhe,
+                          ds_intensidade 	as intensidade,
+                          ds_docura 		  as docura,
+                          ds_acidez 		  as acidez,
+                          ds_torra 		    as torra,
+                          ds_produto 		  as produto,
+                          ds_marca 		    as marca,
+                          ds_peso 		    as peso,
+                          ds_alergia 		  as alergia,
+                          ds_dimensoes 	  as dimensoes
+                     from tb_detalhes
+                    where ds_marca like ?`
+  
+  const [resp] = await conexao.query(comando, [`%${marca}%`])
+
+  return resp;
+}
+
+export async function BuscaDetalhesId(id) {
+  let comando = `select id_detalhe,
+                        ds_intensidade 	as intensidade,
+                        ds_docura 		  as docura,
+                        ds_acidez 		  as acidez,
+                        ds_torra 		    as torra,
+                        ds_produto 		  as produto,
+                        ds_marca 		    as marca,
+                        ds_peso 		    as peso,
+                        ds_alergia 		  as alergia,
+                        ds_dimensoes 	  as dimensoes
+                   from tb_detalhes
+                  where id_detalhe = ?`
+  const [resp] = await conexao.query(comando, id)
+
+  return resp[0]
+}
+
 export async function BuscarIdCategoria(id){
   const comando = `select nm_categoria  as categoria
                      from tb_categoria
@@ -288,24 +325,13 @@ export async function filtrarProdutosPorIdOuNome(valor) {
                               bt_disponivel_assinatura  as assinatura,
                               qtd_estoque               as estoque
                               from  tb_produto
-                       where  nm_produto = ?
+                       where  nm_produto like ?
                           or  id_produto = ?`
 
-  const [resp] = await conexao.query(comando, [valor, valor])
+  const [resp] = await conexao.query(comando, [valor, `%${valor}%`])
 
   return resp          
 }
-
-
-
-
-
-
-
-
-
-
-// Alteração 
 
 export async function BuscaProdutoId(id) {
   let comando = `select id_produto                as id,
@@ -324,20 +350,20 @@ export async function BuscaProdutoId(id) {
   return resp[0]
 }
 
-export async function BuscaDetalhesId(id) {
-  let comando = `select id_detalhe,
-                        ds_intensidade 	as intensidade,
-                        ds_docura 		  as docura,
-                        ds_acidez 		  as acidez,
-                        ds_torra 		    as torra,
-                        ds_produto 		  as produto,
-                        ds_marca 		    as marca,
-                        ds_peso 		    as peso,
-                        ds_alergia 		  as alergia,
-                        ds_dimensoes 	  as dimensoes
-                   from tb_detalhes
-                  where id_detalhe = ?`
-  const [resp] = await conexao.query(comando, id)
+export async function buscarProdutoPorDetalhes(id){
+  const comando = `select id_produto    as id,
+                          id_detalhe,
+                          id_admin,
+                          id_categoria,
+                          nm_produto                as produto,
+                          vl_preco                  as preco,
+                          vl_preco_promocional      as promocao,
+                          bt_disponivel_assinatura  as assinatura,
+                          qtd_estoque               as estoque
+                          from  tb_produto
+                    where id_detalhe = ?`
+
+  const [resp] = await conexao.query(comando, [id])
 
   return resp[0]
 }
@@ -353,6 +379,17 @@ export async function BuscarImagens(id){
 
     return resp
 }
+
+
+
+
+
+
+
+
+
+// Alteração 
+
 
 export async function deletarImagem(id){
   const comando = `delete 
