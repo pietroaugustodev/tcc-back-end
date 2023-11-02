@@ -33,6 +33,17 @@ export async function cadastroEndereco(endereco){
     return endereco
 }
 
+export async function cadastroCartao(info) {
+    const comando = ` insert into tb_cartoes (id_cliente, ds_identidade_titular, ds_nome_titular, ds_cvv, ds_validade, nr_cartao)
+                      values (?, ?, ?, ?, ?, ?);
+    `;
+
+    const [resp] = await conexao.query(comando, [info.idCliente, info.identidade, info.titular, info.cvv, info.validade, info.numeroCartao])
+    info.id = resp.insertId;
+
+    return info;
+}
+
 // Buscando
 
 export async function BuscarDataCadastro(id) {
