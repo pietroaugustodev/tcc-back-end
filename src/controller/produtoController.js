@@ -437,7 +437,22 @@ produtoEndpoints.put('/produto/:idProduto/detalhes/:idDetalhe', async (req, resp
     }
 })
 
-produtoEndpoints.put('/:id/imagens', async (req, resp) => {
+
+
+
+
+
+
+
+
+
+
+
+
+
+// Deletando
+
+produtoEndpoints.delete('/:id/imagens', async (req, resp) => {
     try{
         const {deletar} = req.body
         for(let item of deletar){
@@ -455,20 +470,6 @@ produtoEndpoints.put('/:id/imagens', async (req, resp) => {
         })
     }
 })
-
-
-
-
-
-
-
-
-
-
-
-
-
-// Deletando
 
 produtoEndpoints.delete('/deletar/produto', async (req, resp) => {
     try{
