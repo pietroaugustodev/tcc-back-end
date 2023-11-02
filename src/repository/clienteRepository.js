@@ -13,7 +13,7 @@ export async function cadastro(cliente) {
         telefone: cliente.telefone,
         cpf: cliente.cpf,
         nome: cliente.nome,
-        nascimento: cliente.nascimento,
+        nascimento: '',
         id: resp.insertId,
     }
     clienteNovo.dtCadastro = await BuscarDataCadastro(resp.insertId)
@@ -136,6 +136,21 @@ export async function alterarEndereco(id, endereco){
 
     return resp.affectedRows
 }
+
+export async function alterarCliente(id, dados){
+    const comando = `update tb_cliente
+                        set nm_cliente      = ?,
+                            ds_telefone     = ?,
+                            ds_cpf 		    = ?,
+                            dt_nascimento   = ?,
+                            ds_email        = ?
+                      where id_cliente      = ?`
+
+    const [resp] = await conexao.query(comando, [dados.nome, dados.telefone, dados.cpf, dados.nascimento, dados.email, id])
+
+    return resp.affectedRows
+}
+
 
 // Deletando
 

@@ -117,9 +117,9 @@ produtoEndpoints.get('/produtos', async (req, resp) => {
     }
 })
 
-produtoEndpoints.get('/produtos/:marca', async (req, resp) => {
+produtoEndpoints.get('/produtos/marca', async (req, resp) => {
     try {
-        const {marca} = req.params
+        const {marca, categoria} = req.body
 
         let produtos = []
         let detalhesProdutosMarca = await buscarProdutosPorMarca(marca)
@@ -130,6 +130,8 @@ produtoEndpoints.get('/produtos/:marca', async (req, resp) => {
             produto.detalhes = detalhesProdutosMarca[cont]
             produtos[cont] = produto
         }
+
+        
 
         resp.send(produtos)
     }
