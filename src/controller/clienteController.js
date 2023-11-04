@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { buscarTodosCartoes, BuscarRepetido, Login, alterarEndereco, buscarTodosEnderecos, cadastro, cadastroEndereco, cadastroEnderecoAssinatura, deletarEndereco, cadastroCartao } from "../repository/clienteRepository.js";
+import { buscarTodosCartoes, BuscarRepetido, Login, alterarEndereco, buscarTodosEnderecos, cadastro, cadastroEndereco, cadastroEnderecoAssinatura, deletarEndereco, cadastroCartao, alterarCliente } from "../repository/clienteRepository.js";
 
 
 const clienteEndpoints = Router()
@@ -122,6 +122,19 @@ clienteEndpoints.post('/cartao/:num', async (req, resp) => {
 })
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
 // Buscando 
 
 clienteEndpoints.post('/cliente/login', async (req, resp) => {
@@ -179,6 +192,19 @@ clienteEndpoints.get('/cartoes/:id', async (req, resp) => {
 
 clienteEndpoints.get('/cartoes/')
 
+
+
+
+
+
+
+
+
+
+
+
+
+
 // Alterando 
 
 clienteEndpoints.put('/endereco/:id', async (req, resp) => {
@@ -212,6 +238,44 @@ clienteEndpoints.put('/endereco/:id', async (req, resp) => {
     }
 })
 
+clienteEndpoints.put('/cliente/:id', async (req, resp) => {
+    try {
+        const id = Number(req.params.id)
+        const dadosCliente = req.body
+
+        if(!dadosCliente.nome)
+            throw new Error('É obrigatório ter um nome')
+        if(!dadosCliente.telefone)
+            throw new Error('É obrigatório ter um número de telefone')
+        if(!dadosCliente.email)
+            throw new Error('É obrigatório ter um email')
+        if(!dadosCliente.cpf)
+            throw new Error('É obrigatório ter um CPF')
+
+        const resposta = await alterarCliente(id, dadosCliente)
+        if(resposta !== 1)
+            throw new Error('Não foi possível alterar os dados pessoais')
+
+        resp.status(204).send()
+    }
+    catch(err){
+        resp.status(500).send({
+            erro: err.message
+        })
+    }
+})
+
+
+
+
+
+
+
+
+
+
+
+
 
 // Deletando
 
@@ -234,5 +298,6 @@ clienteEndpoints.delete('/endereco', async (req, resp) => {
         })
     }
 })
+
 
 export default clienteEndpoints;

@@ -117,21 +117,41 @@ produtoEndpoints.get('/produtos', async (req, resp) => {
     }
 })
 
-produtoEndpoints.get('/produtos/:marca', async (req, resp) => {
+produtoEndpoints.get('/produtos/marca', async (req, resp) => {
     try {
-        const {marca} = req.params
+        const {marca, categoria} = req.query
+        let idCategoria = 0
+        if(categoria === 'cafeemgraos')
+            idCategoria = 1
+        else if(categoria === 'cafeempo')
+            idCategoria = 2
+        else if(categoria === 'cafeteiras')
+            idCategoria = 3
+        else if(categoria === 'filtros')
+            idCategoria = 5
+        else if(categoria === 'capsulas')
+            idCategoria = 6
+        else if(categoria === 'moedores')
+            idCategoria = 7
+        else if(categoria === 'acessorios')
+            idCategoria = 8
 
         let produtos = []
         let detalhesProdutosMarca = await buscarProdutosPorMarca(marca)
-    
+        
 
         for(let cont = 0; cont < detalhesProdutosMarca.length ; cont++){
             let produto = await buscarProdutoPorDetalhes(detalhesProdutosMarca[cont].id_detalhe)
             produto.detalhes = detalhesProdutosMarca[cont]
+            produto.categoria = await BuscarIdCategoria(produto.id_categoria)
+            const respImagens = await BuscarImagens(produto.id)
+            produto.imagem = respImagens[0].caminho
             produtos[cont] = produto
         }
+        const produtosFiltradosPorCategoria = produtos.filter(item => item.id_categoria === idCategoria)
 
-        resp.send(produtos)
+
+        resp.send(produtosFiltradosPorCategoria)
     }
     catch(err){
         resp.status(500).send({
@@ -317,20 +337,6 @@ produtoEndpoints.get('/filtro/produtos/pesquisa/:valor', async (req, resp) => {
 //     }
 // })
 
-
-
-
-
-
-
-
-
-
-
-
-
-// Alterando
-
 produtoEndpoints.get('/produto/:id', async (req, resp) => {
     try{
         const {id} = req.params
@@ -381,6 +387,18 @@ produtoEndpoints.get('/detalhes/:id', async (req, resp) => {
         })
     }
 })
+
+
+
+
+
+
+
+
+
+
+
+// Alterando
 
 produtoEndpoints.put('/produto/:idProduto/detalhes/:idDetalhe', async (req, resp) =>{
     try{
@@ -435,7 +453,22 @@ produtoEndpoints.put('/produto/:idProduto/detalhes/:idDetalhe', async (req, resp
     }
 })
 
-produtoEndpoints.put('/:id/imagens', async (req, resp) => {
+
+
+
+
+
+
+
+
+
+
+
+
+
+// Deletando
+
+produtoEndpoints.delete('/:id/imagens', async (req, resp) => {
     try{
         const {deletar} = req.body
         for(let item of deletar){
@@ -453,20 +486,6 @@ produtoEndpoints.put('/:id/imagens', async (req, resp) => {
         })
     }
 })
-
-
-
-
-
-
-
-
-
-
-
-
-
-// Deletando
 
 produtoEndpoints.delete('/deletar/produto', async (req, resp) => {
     try{
