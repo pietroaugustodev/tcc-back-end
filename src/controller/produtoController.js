@@ -194,8 +194,8 @@ produtoEndpoints.get('/filtro/produtos/adm/:id', async (req, resp) =>{
         for(let cont = 0; cont < produtosFiltrados.length; cont ++){
             produtosFiltrados[cont].admin = await BuscarIdAdm(produtosFiltrados[cont].id_admin) 
             produtosFiltrados[cont].categoria = await BuscarIdCategoria(produtosFiltrados[cont].id_categoria)
-            const detalhesProdutos = await BuscaDetalhesId(resposta[cont].id)
-            resposta[cont].detalhes = detalhesProdutos
+            const detalhesProdutos = await BuscaDetalhesId(produtosFiltrados[cont].id)
+            produtosFiltrados[cont].detalhes = detalhesProdutos
             const respImagens = await BuscarImagens(produtosFiltrados[cont].id)
             produtosFiltrados[cont].imagem = respImagens[0].caminho
         }
@@ -217,8 +217,8 @@ produtoEndpoints.get('/filtro/produtos/categorias/:id', async (req, resp) => {
         for(let cont = 0; cont < produtosFiltrados.length; cont ++){
             produtosFiltrados[cont].admin = await BuscarIdAdm(produtosFiltrados[cont].id_admin) 
             produtosFiltrados[cont].categoria = await BuscarIdCategoria(produtosFiltrados[cont].id_categoria)
-            const detalhesProdutos = await BuscaDetalhesId(resposta[cont].id)
-            resposta[cont].detalhes = detalhesProdutos
+            const detalhesProdutos = await BuscaDetalhesId(produtosFiltrados[cont].id)
+            produtosFiltrados[cont].detalhes = detalhesProdutos
             const respImagens = await BuscarImagens(produtosFiltrados[cont].id)
             produtosFiltrados[cont].imagem = respImagens[0].caminho
         }
@@ -278,12 +278,12 @@ produtoEndpoints.get('/filtro/produtos/disponivelAssinatura/:valor', async (req,
             valorBoolean = Boolean(valor)
         }
         
-        const produtosFiltrados = await filtrarProdutosPorDisponibilidadeAssinatura(valorBoolean)
+        let produtosFiltrados = await filtrarProdutosPorDisponibilidadeAssinatura(valorBoolean)
         for(let cont = 0; cont < produtosFiltrados.length; cont ++){
             produtosFiltrados[cont].admin = await BuscarIdAdm(produtosFiltrados[cont].id_admin) 
             produtosFiltrados[cont].categoria = await BuscarIdCategoria(produtosFiltrados[cont].id_categoria)
-            const detalhesProdutos = await BuscaDetalhesId(resposta[cont].id)
-            resposta[cont].detalhes = detalhesProdutos
+            const detalhesProdutos = await BuscaDetalhesId(produtosFiltrados[cont].id)
+            produtosFiltrados[cont].detalhes = detalhesProdutos
             const respImagens = await BuscarImagens(produtosFiltrados[cont].id)
             produtosFiltrados[cont].imagem = respImagens[0].caminho
         }
@@ -302,7 +302,7 @@ produtoEndpoints.get('/filtro/produtos/pesquisa/:valor', async (req, resp) => {
         const {valor} = req.params
 
 
-        const resposta = await filtrarProdutosPorIdOuNome(valor)
+        let resposta = await filtrarProdutosPorIdOuNome(valor)
 
         for(let cont = 0; cont < resposta.length; cont ++){
             resposta[cont].admin = await BuscarIdAdm(resposta[cont].id_admin) 
