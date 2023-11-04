@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { buscarTodosCartoes, BuscarRepetido, Login, alterarEndereco, buscarTodosEnderecos, cadastro, cadastroEndereco, deletarEndereco, cadastroCartao } from "../repository/clienteRepository.js";
+import { buscarTodosCartoes, BuscarRepetido, Login, alterarEndereco, buscarTodosEnderecos, cadastro, cadastroEndereco, cadastroEnderecoAssinatura, deletarEndereco, cadastroCartao } from "../repository/clienteRepository.js";
 
 
 const clienteEndpoints = Router()
@@ -64,16 +64,58 @@ clienteEndpoints.post('/endereco/:num', async (req, resp) => {
     }
 })
 
+clienteEndpoints.post('/assinatura/endereco/:num', async (req, resp) => {
+    try{
+        const endereco = req.body
+        endereco.idCliente = Number(req.params.num)
+        if(!endereco.idCliente || endereco.idCliente === 0)
+            throw new Error('Id endereço inválido ou não encontrado')
+        if(!endereco.cep)
+            throw new Error('CEP obrigatório')
+        if(!endereco.numero)
+            throw new Error('Número da casa obrigatório')
+
+        const resposta = await cadastroEnderecoAssinatura(endereco)
+
+        resp.send(resposta)
+    }
+    catch(err){
+        resp.status(500).send({
+            erro: err.message
+        })
+    }
+})
+
 clienteEndpoints.post('/cartao/:num', async (req, resp) => {
     try {
         const infoCartao = req.body;
         infoCartao.id = Number(req.params.num);
+        console.log(infoCartao)
+
+
+            if (infoCartao.numeroCartao.length !== 16 || !infoCartao.numeroCartao) 
+                throw new Error('Número do cartão incorreto!');
+            
+            if (infoCartao.validade === '' || infoCartao.validade.length !== 5 || !infoCartao.validade)
+                throw new Error('Validade incorreta!');
+            
+            if (infoCartao.cvv === '' || infoCartao.cvv.length !== 3 || !infoCartao.cvv)
+                throw new Error('CVV incorreto!');
+
+            if (infoCartao.titular === '' || !infoCartao.titular) 
+                throw new Error('Insira o nome do titular!');
+
+            if (/\d/.test(infoCartao.titular))
+                throw new Error('Nome é inválido!')
+            
+            if (infoCartao.identidade === '' || infoCartao.identidade.length !== 11 || !infoCartao.identidade)  
+                throw new Error('CPF incorreto!');
 
         
         const resposta = await cadastroCartao(infoCartao);
         resp.send(resposta);
     } catch(err){
-        resp.status(401).send({
+        resp.status(500).send({
             erro: err.message
         })
     }
