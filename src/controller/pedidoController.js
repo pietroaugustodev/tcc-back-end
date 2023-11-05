@@ -66,16 +66,16 @@ pedidoEndpoints.get('/pedidos/data/:data', async (req, resp) => {
     }
 })
 
-pedidoEndpoints.get('/pedidos/busca/:busca', async (req, resp) => {
+pedidoEndpoints.get('/pedidos/pesquisa/:pesquisa', async (req, resp) => {
     try{
-        const {busca} = req.params
+        const {pesquisa} = req.params
 
         let resposta = []
-        if(busca[0] === '0' || busca[0] === '1' || busca[0] === '2' || busca[0] === '3' || busca[0] === '4' || busca[0] === '5' || busca[0] === '6' || busca[0] === '7' || busca[0] === '8' || busca[0] === '9'){
-            resposta = await buscarPedidosPorClienteOuCodigo(busca)
+        if(pesquisa[0] === '0' || pesquisa[0] === '1' || pesquisa[0] === '2' || pesquisa[0] === '3' || pesquisa[0] === '4' || pesquisa[0] === '5' || pesquisa[0] === '6' || pesquisa[0] === '7' || pesquisa[0] === '8' || pesquisa[0] === '9'){
+            resposta = await buscarPedidosPorClienteOuCodigo(pesquisa)
         }
         else{
-            let clientesRetornados = await buscarClientePorNome(busca)
+            let clientesRetornados = await buscarClientePorNome(pesquisa)
             for(let cont = 0; cont < clientesRetornados.length; cont++){
                 resposta[cont] = await buscarPedidosPorIdCliente(clientesRetornados[cont].id)
             }
