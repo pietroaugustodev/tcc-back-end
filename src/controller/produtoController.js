@@ -324,9 +324,13 @@ produtoEndpoints.get('/filtro/produtos/pesquisa/:valor', async (req, resp) => {
 // produtoEndpoints.get('/filtro/produtos/ordenar/:coluna', async (req, resp) => {
 //     try{
 //         const {coluna} = req.params
-
-
-//         const resposta = await ordenarProdutosPorColuna(coluna)
+//         console.log(coluna);
+//         console.log(typeof coluna);
+//         let coluna1 = ''
+//         if(coluna === 'vl_preco'){
+//             coluna1 = 'vl_preco'
+//         }
+//         const resposta = await ordenarProdutosPorColuna(coluna1)
         
 //         resp.send(resposta)
 //     }   

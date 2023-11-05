@@ -1,5 +1,4 @@
-show databases;
-show tables;
+
 create database bunaShiki;
 use bunaShiki;
 
@@ -116,7 +115,6 @@ create table tb_pedido (
 	ds_codigo_pedido varchar(200) not null,
 	tp_entrega varchar(100) not null,
 	tp_forma_pagamento varchar(100) not null ,
-	qtd_parcelas int null,
 	dt_pedido datetime not null,
 	ds_situacao varchar(100) not null,
 	vl_subtotal decimal(7, 2) not null,

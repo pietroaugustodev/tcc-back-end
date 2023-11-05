@@ -28,13 +28,13 @@ insert into tb_admin(ds_email, nm_usuario, ds_senha, img_adm)
 
 -- Inserindo categorias
 insert into tb_categoria(nm_categoria, img_categoria)
-				values('Café em grãos', '/assets/images/categorias/graosz-cat.png');
+				values('Café em grãos', '/assets/images/categorias/graos.png');
 insert into tb_categoria(nm_categoria, img_categoria)
-				values('Café em pó', '/assets/images/categorias/poo-cat.png');
+				values('Café em pó', '/assets/images/categorias/po.png');
 insert into tb_categoria(nm_categoria, img_categoria)
-				values('Cafeteiras', '/assets/images/categorias/cafeteiraa-cat.png');
+				values('Cafeteiras', '/assets/images/categorias/cafeteiras.png');
 insert into tb_categoria(nm_categoria, img_categoria)
-				values('Combos', '/assets/images/categorias/cat-graoss.png');
+				values('Combos', '/assets/images/categorias/combo.png');
 insert into tb_categoria(nm_categoria, img_categoria)
 				values('Filtros', '/assets/images/categorias/filtros.webp');
 insert into tb_categoria(nm_categoria, img_categoria)
