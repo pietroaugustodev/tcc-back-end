@@ -1,8 +1,8 @@
 import conexao from "./connection.js"
 
 
-
-
+// Buscando
+ 
 export async function buscarTodosPedidos(){
     const comando = `select id_pedido           as id,
                             id_cliente,
@@ -86,7 +86,7 @@ export async function buscarPedidosPorData(data) {
     return resp;
 }
 
-export async function buscarPedidosPorClienteOuCodigo(busca){
+export async function buscarPedidosPorCodigo(busca){
     const comando = `select id_pedido           as id,
                             id_cliente,
                             id_endereco_entrega as id_endereco,
@@ -100,12 +100,11 @@ export async function buscarPedidosPorClienteOuCodigo(busca){
                             vl_total            as total,
                             ds_avaliacao        as avalicao
                        from tb_pedido
-                      where id_cliente like ?
-                         or ds_codigo_pedido like ?`
+                      where ds_codigo_pedido = ?`
 
-    const [resp] = await conexao.query(comando, [busca, busca])
+    const [resp] = await conexao.query(comando, [busca])
 
-    return resp;
+    return resp
 }
 
 export async function buscarClientePorNome(nome){
@@ -122,6 +121,22 @@ export async function buscarClientePorNome(nome){
     const [resp] = await conexao.query(comando, [`%${nome}%`])
 
     return resp
+}
+
+export async function buscarClientePorId(id){
+    const comando = `select id_cliente      as id,
+                            nm_cliente      as nome,
+                            ds_telefone     as telefone,
+                            ds_cpf          as cpf,
+                            dt_nascimento   as nascimento,
+                            ds_email        as email,
+                            dt_cadastro
+                       from tb_cliente
+                      where id_cliente = ?`
+    
+    const [resp] = await conexao.query(comando, [id])          
+    
+    return resp[0]
 }
 
 export async function ordenarPedidosPorFaturamento(){
@@ -196,9 +211,36 @@ export async function ordenarPedidosPorData(){
                              vl_total            as total,
                              ds_avaliacao        as avalicao
                         from tb_pedido
-                    order by dt_pedido`
+                    order by dt_pedido desc`
     
     const [resp] = await conexao.query(comando)
     
     return resp
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/// Alterando
+
+export async function alterarStatus(novoStatus, id){
+    const comando = `update tb_pedido
+                        set ds_situacao = ?
+                      where id_pedido = ?`
+                    
+    const [resp] = await conexao.query(comando, [novoStatus, id])     
+    
+    return resp.affectedRows
 }
