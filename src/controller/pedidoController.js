@@ -1,5 +1,6 @@
 import { Router } from "express";
-import { alterarStatus, buscarClientePorId, buscarClientePorNome, buscarPedidosPorCodigo, buscarPedidosPorData, buscarPedidosPorFormaPagamento, buscarPedidosPorIdCliente, buscarPedidosPorStatus, buscarTodosPedidos, ordenarClientePorNome, ordenarPedidosPorData, ordenarPedidosPorFaturamento } from "../repository/pedidoRepository.js";
+import { alterarStatus, buscarClientePorId, buscarClientePorNome, buscarItemsPedidoPorIdPedido, buscarPedidoPorIdPedido, buscarPedidosPorCodigo, buscarPedidosPorData, buscarPedidosPorFormaPagamento, buscarPedidosPorIdCliente, buscarPedidosPorStatus, buscarTodosPedidos, ordenarClientePorNome, ordenarPedidosPorData, ordenarPedidosPorFaturamento } from "../repository/pedidoRepository.js";
+import { BuscaDetalhesId, BuscaProdutoId, BuscarIdCategoria, BuscarImagens } from "../repository/produtoRepository.js";
 
 const pedidoEndpoints = Router()
 
@@ -23,9 +24,9 @@ pedidoEndpoints.get('/pedidos', async (req, resp) => {
             resposta[cont].cliente = cliente.nome
         }
 
-        let produtosFiltrados = resposta.filter(item => item.situacao !== 'Cancelado' && item.situacao !== 'Entregue')
+        let pedidosFiltrados = resposta.filter(item => item.situacao !== 'Cancelado' && item.situacao !== 'Entregue')
 
-        resp.send(produtosFiltrados)
+        resp.send(pedidosFiltrados)
     }
     catch(err){
         resp.status(500).send({
@@ -167,7 +168,32 @@ pedidoEndpoints.get('/pedidos/ordenar/:campo', async (req, resp) => {
     }
 })
 
+pedidoEndpoints.get('/pedido/:id', async (req, resp) => {
+    try{
+        const {id} = req.params
 
+        let pedido = await buscarPedidoPorIdPedido(id)
+        pedido.cliente = await buscarClientePorId(pedido.id_cliente)
+        console.log(pedido);
+        pedido.itens = await buscarItemsPedidoPorIdPedido(id)
+
+        for(let cont = 0; cont < pedido.itens.length; cont ++){
+            pedido.itens[cont].produto = await BuscaProdutoId(pedido.itens[cont].id_produto)
+            pedido.itens[cont].produto.categoria = await BuscarIdCategoria(pedido.itens[cont].produto.id_categoria)
+            const respImagens = await BuscarImagens(pedido.itens[cont].produto.id)
+            pedido.itens[cont].produto.imagem = respImagens[0].caminho
+            const detalhesProdutos = await BuscaDetalhesId(pedido.itens[cont].produto.id)
+            pedido.itens[cont].produto.detalhes = detalhesProdutos
+        }
+
+        resp.send(pedido)
+    }
+    catch(err){
+        resp.status(500).send({
+            erro: err.message
+        })
+    }
+})
 
 
 

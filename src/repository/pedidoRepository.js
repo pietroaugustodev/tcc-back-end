@@ -218,6 +218,40 @@ export async function ordenarPedidosPorData(){
     return resp
 }
 
+export async function buscarPedidoPorIdPedido(id){
+    const comando = `select id_pedido           as id,
+                            id_cliente,
+                            id_endereco_entrega as id_endereco,
+                            ds_codigo_pedido    as codigo,
+                            tp_entrega,
+                            tp_forma_pagamento  as forma_pagamento,
+                            dt_pedido,
+                            ds_situacao         as situacao,
+                            vl_subtotal         as subtotal,
+                            vl_frete            as frete,
+                            vl_total            as total,
+                            ds_avaliacao        as avalicao
+                       from tb_pedido
+                      where id_pedido = ?`
+
+    const [resp] = await conexao.query(comando, [id])
+
+    return resp[0]
+}
+
+export async function buscarItemsPedidoPorIdPedido(id){
+
+    const comando = `select id_pedido_item  as id,
+                            id_pedido,
+                            id_produto,
+                            qtd_itens       as qtd
+                       from tb_pedido_item     
+                      where id_pedido = ?`
+
+    const [resp] = await conexao.query(comando, [id])
+
+    return resp
+}
 
 
 
