@@ -23,6 +23,17 @@ assinaturaEndpoints.get('/listar-assinaturas/imagem', async (req, resp) => {
             erro: error.message
         })
     }
+});
+
+assinaturaEndpoints.post('/concluir-assinatura', async (req, resp) => {
+    try {
+        const info = req.body;
+        
+    } catch (error) {
+        resp.status(500).send({
+            erro: error.message
+        })
+    }
 })
 
 export default assinaturaEndpoints;
