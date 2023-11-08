@@ -475,6 +475,7 @@ produtoEndpoints.put('/produto/:idProduto/detalhes/:idDetalhe', async (req, resp
 produtoEndpoints.delete('/:id/imagens', async (req, resp) => {
     try{
         const {deletar} = req.body
+        console.log(deletar);
         for(let item of deletar){
             console.log(item);
             const resposta = await deletarImagem(item)

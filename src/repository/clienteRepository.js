@@ -103,6 +103,23 @@ export async function Login(email, senha){
     return resp[0]
 }
 
+export async function buscarEnderecoPorIdEndereco(id){
+    const comando = `select id_endereco     as id,
+                            id_cliente,
+                            ds_cep			as cep,
+                            ds_rua			as rua,
+                            ds_cidade		as cidade,
+                            ds_complemento	as complemento,
+                            nr_endereco		as numero
+                       from tb_endereco
+                      where id_endereco = ?`
+
+    const [resp] = await conexao.query(comando, [id])
+    
+    return resp[0]
+}
+
+
 export async function buscarTodosEnderecos(idCliente){
     const comando = `select id_endereco     as id,
                             id_cliente,
