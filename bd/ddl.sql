@@ -116,6 +116,7 @@ create table tb_pedido (
 	tp_entrega varchar(100) not null,
 	tp_forma_pagamento varchar(100) not null ,
 	dt_pedido datetime not null,
+	dt_entrega_pedido date not null,
 	ds_situacao varchar(100) not null,
 	vl_subtotal decimal(7, 2) not null,
 	vl_frete decimal(5, 2) not null,
