@@ -1,6 +1,7 @@
 import { Router } from "express";
 import { alterarStatus, buscarClientePorId, buscarClientePorNome, buscarItemsPedidoPorIdPedido, buscarPedidoPorIdPedido, buscarPedidosPorCodigo, buscarPedidosPorData, buscarPedidosPorFormaPagamento, buscarPedidosPorIdCliente, buscarPedidosPorStatus, buscarTodosPedidos, ordenarClientePorNome, ordenarPedidosPorData, ordenarPedidosPorFaturamento } from "../repository/pedidoRepository.js";
 import { BuscaDetalhesId, BuscaProdutoId, BuscarIdCategoria, BuscarImagens } from "../repository/produtoRepository.js";
+import { buscarEnderecoPorIdEndereco } from "../repository/clienteRepository.js";
 
 const pedidoEndpoints = Router()
 
@@ -173,8 +174,8 @@ pedidoEndpoints.get('/pedido/:id', async (req, resp) => {
         const {id} = req.params
 
         let pedido = await buscarPedidoPorIdPedido(id)
+        pedido.endereco = await buscarEnderecoPorIdEndereco(pedido.id_endereco)
         pedido.cliente = await buscarClientePorId(pedido.id_cliente)
-        console.log(pedido);
         pedido.itens = await buscarItemsPedidoPorIdPedido(id)
 
         for(let cont = 0; cont < pedido.itens.length; cont ++){
