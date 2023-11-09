@@ -25,15 +25,18 @@ assinaturaEndpoints.get('/listar-assinaturas/imagem', async (req, resp) => {
     }
 });
 
+// Inserindo
+
 assinaturaEndpoints.post('/concluir-assinatura', async (req, resp) => {
     try {
         const info = req.body;
+        // const 
         
     } catch (error) {
         resp.status(500).send({
             erro: error.message
         })
     }
-})
+});
 
 export default assinaturaEndpoints;

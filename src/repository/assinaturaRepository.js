@@ -19,3 +19,15 @@ export async function procurarAssinatura () {
 export async function procurarImagemAssinatura () {
     
 }
+
+export async function novaAssinatura (info) {
+    const sql = `
+                insert into tb_assinatura (id_cliente, id_endereco, dt_inicio, dt_fim, vl_mensalidade)
+                values(?, ?, curdate(), adddate(curdate(), interval 30 day), ?);
+    `;
+
+    const resp = await conexao.query(sql, [info.idCliente, info.idEndereco, info.mensalidade]);
+    const dados = resp[0]
+    info.id = dados.insertId;
+    return info;
+}
