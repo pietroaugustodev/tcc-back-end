@@ -230,5 +230,4 @@ pedidoEndpoints.put('/pedido/status', async (req, resp) => {
 })
 
 
-
 export default pedidoEndpoints
