@@ -1,9 +1,60 @@
 import { Router } from "express";
-import { alterarStatus, buscarClientePorId, buscarClientePorNome, buscarItemsPedidoPorIdPedido, buscarPedidoPorIdPedido, buscarPedidosPorCodigo, buscarPedidosPorData, buscarPedidosPorFormaPagamento, buscarPedidosPorIdCliente, buscarPedidosPorStatus, buscarTodosPedidos, ordenarClientePorNome, ordenarPedidosPorData, ordenarPedidosPorFaturamento } from "../repository/pedidoRepository.js";
+import { alterarStatus, buscarClientePorId, buscarClientePorNome, buscarItemsPedidoPorIdPedido, buscarPedidoPorIdPedido, buscarPedidosPorCodigo, buscarPedidosPorData, buscarPedidosPorFormaPagamento, buscarPedidosPorIdCliente, buscarPedidosPorStatus, buscarTodosPedidos, cadastrarItemPedido, cadastrarPedido, ordenarClientePorNome, ordenarPedidosPorData, ordenarPedidosPorFaturamento } from "../repository/pedidoRepository.js";
 import { BuscaDetalhesId, BuscaProdutoId, BuscarIdCategoria, BuscarImagens } from "../repository/produtoRepository.js";
 import { buscarEnderecoPorIdEndereco } from "../repository/clienteRepository.js";
 
 const pedidoEndpoints = Router()
+
+
+
+
+// Cadastrando 
+
+pedidoEndpoints.post('/pedido', async (req, resp) => {
+    try{
+        const pedido = req.body
+
+        if(pedido.id_endereco === 0 || !pedido.id_endereco)
+            throw new Error('É obrigatório escolher o endereço para entrega.')
+        if(!pedido.forma_pagamento)
+            throw new Error(`É obrigatório escolher uma forma de pagamento.
+        Obs: se a forma de pagamento for pix, clique em cima da opção.`)
+        if(!pedido.tp_entrega)
+            throw new Error('É obrigatório escolher um tipo de entrega, clique em cima da opção escolhida.')
+
+
+        const resposta = await cadastrarPedido(pedido)
+
+        resp.send(resposta)
+    }
+    catch(err){
+        resp.status(500).send({
+            erro: err.message
+        })
+    }
+})
+
+pedidoEndpoints.post('/pedido/item', async (req, resp) => {
+    try{
+        const item = req.body
+
+        const resposta = await cadastrarItemPedido(item)
+
+        resp.send(resposta)
+    }
+    catch(err){
+        resp.status(500).send({
+            erro: err.message
+        })
+    }
+})
+
+
+
+
+
+
+
 
 
 

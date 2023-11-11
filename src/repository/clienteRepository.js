@@ -70,7 +70,7 @@ export async function BuscarRepetido(busca){
     return resp[0]
 }
 
-export async function buscarTodosCartoes (idCliente) {
+export async function buscarCartoesPorIdCliente (idCliente) {
     const comando = `select id_cartoes              as id,
                             id_cliente,
                             ds_identidade_titular	as identidade,
@@ -120,7 +120,7 @@ export async function buscarEnderecoPorIdEndereco(id){
 }
 
 
-export async function buscarTodosEnderecos(idCliente){
+export async function buscarEnderecosPorIdCliente(idCliente){
     const comando = `select id_endereco     as id,
                             id_cliente,
                             ds_cep			as cep,

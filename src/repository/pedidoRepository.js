@@ -1,6 +1,43 @@
 import conexao from "./connection.js"
 
 
+
+
+
+// Cadastrando
+
+export async function cadastrarPedido(pedido){
+    const comando = `insert into tb_pedido(id_cliente, id_endereco_entrega, tp_entrega, tp_forma_pagamento, dt_pedido, dt_entrega_pedido, ds_situacao, vl_subtotal, vl_frete, vl_total, ds_avaliacao)
+                                    values(?, ?, ?, ?, now(), ?, 'Pedido realizado' ,  ?, ?, ?, 0)`
+
+    const [resp] = await conexao.query(comando, [pedido.id_cliente, pedido.id_endereco, pedido.tp_entrega, pedido.forma_pagamento, pedido.dt_entrega, pedido.subtotal, pedido.frete, pedido.total])                            
+
+    pedido.id = resp.insertId
+
+    return pedido
+}
+
+
+export async function cadastrarItemPedido(item){
+    const comando = `insert into tb_pedido_item(id_pedido, id_produto, qtd_itens)
+                                        values(?, ?, ?)`
+
+    const [resp] = await conexao.query(comando, [item.id_pedido, item.id_produto, item.qtd])
+
+    item.id = resp.insertId
+
+    return item;
+}
+
+
+
+
+
+
+
+
+
+
 // Buscando
  
 export async function buscarTodosPedidos(){
