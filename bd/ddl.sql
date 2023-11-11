@@ -1,5 +1,4 @@
-show databases;
-show tables;
+
 create database bunaShiki;
 use bunaShiki;
 
@@ -84,7 +83,6 @@ create table tb_assinatura (
 	dt_inicio datetime not null,
 	dt_fim date null,
 	vl_mensalidade decimal(6,2) not null,
-	ds_codigo_assinatura varchar(100) not null,
     foreign key (id_cliente) references tb_cliente(id_cliente),
     foreign key (id_endereco) references tb_endereco(id_endereco)
 );
@@ -113,11 +111,10 @@ create table tb_pedido (
 	id_pedido int primary key auto_increment,
 	id_cliente int not null,
     id_endereco_entrega int not null,
-	ds_codigo_pedido varchar(200) not null,
 	tp_entrega varchar(100) not null,
 	tp_forma_pagamento varchar(100) not null ,
-	qtd_parcelas int null,
 	dt_pedido datetime not null,
+	dt_entrega_pedido date not null,
 	ds_situacao varchar(100) not null,
 	vl_subtotal decimal(7, 2) not null,
 	vl_frete decimal(5, 2) not null,

@@ -27,13 +27,13 @@ insert into tb_admin(ds_email, nm_usuario, ds_senha, img_adm)
 
 -- Inserindo categorias
 insert into tb_categoria(nm_categoria, img_categoria)
-				values('Café em grãos', '/assets/images/categorias/graosz-cat.png');
+				values('Café em grãos', '/assets/images/categorias/graos.png');
 insert into tb_categoria(nm_categoria, img_categoria)
-				values('Café em pó', '/assets/images/categorias/poo-cat.png');
+				values('Café em pó', '/assets/images/categorias/po.png');
 insert into tb_categoria(nm_categoria, img_categoria)
-				values('Cafeteiras', '/assets/images/categorias/cafeteiraa-cat.png');
+				values('Cafeteiras', '/assets/images/categorias/cafeteiras.png');
 insert into tb_categoria(nm_categoria, img_categoria)
-				values('Combos', '/assets/images/categorias/cat-graoss.png');
+				values('Combos', '/assets/images/categorias/combo.png');
 insert into tb_categoria(nm_categoria, img_categoria)
 				values('Filtros', '/assets/images/categorias/filtros.webp');
 insert into tb_categoria(nm_categoria, img_categoria)
@@ -42,3 +42,7 @@ insert into tb_categoria(nm_categoria, img_categoria)
 				values('Moedores', '/assets/images/categorias/moedores.webp');
 insert into tb_categoria(nm_categoria, img_categoria)
 				values('Acessórios', '/assets/images/categorias/acessorios.jpg');        
+
+-- Inserindo pedido
+insert into tb_pedido(id_cliente, id_endereco_entrega, tp_entrega, tp_forma_pagamento, dt_pedido, dt_entrega_pedido, ds_situacao, vl_subtotal, vl_frete, vl_total, ds_avaliacao)
+				values  (1, 1, '000-000', 'Entrega Express', 'Cartão de Crédito', now(), '2023-06-23', 'Aguardando pagamento', 300.00, 11.00, 311.00, 5);
