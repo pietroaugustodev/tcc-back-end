@@ -98,7 +98,7 @@ produtoEndpoints.post('/produto', async (req, resp) => {
 
 produtoEndpoints.get('/produtos', async (req, resp) => {
     try{
-        const resposta = await BuscarProdutos()
+        const resposta = await BuscarProdutos();
         for(let cont = 0; cont < resposta.length; cont ++){
             resposta[cont].admin = await BuscarIdAdm(resposta[cont].id_admin) 
             resposta[cont].categoria = await BuscarIdCategoria(resposta[cont].id_categoria)
