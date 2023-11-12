@@ -111,6 +111,7 @@ create table tb_pedido (
 	id_pedido int primary key auto_increment,
 	id_cliente int not null,
     id_endereco_entrega int not null,
+	id_cartao int not null,
 	tp_entrega varchar(100) not null,
 	tp_forma_pagamento varchar(100) not null ,
 	dt_pedido datetime not null,
