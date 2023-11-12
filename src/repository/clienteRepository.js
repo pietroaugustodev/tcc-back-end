@@ -86,6 +86,22 @@ export async function buscarCartoesPorIdCliente (idCliente) {
     return resp; 
 }
 
+export async function buscarCartaoPorIdCartao(id) {
+    const comando = `select id_cartoes              as id,
+                            id_cliente,
+                            ds_identidade_titular	as identidade,
+                            ds_nome_titular         as nome,
+                            ds_cvv			        as cvv,
+                            ds_validade 	        as complemento,
+                            nr_cartao		        as numero
+                       from tb_cartoes
+                      where id_cartoes = ? `
+
+    const [resp] = await conexao.query(comando, [id])
+    
+    return resp[0]
+}
+
 export async function Login(email, senha){
     const comando = `select ds_email        as email,
                             dt_nascimento   as nascimento,
