@@ -1,8 +1,72 @@
 import {Router } from "express";
-import { buscarCombos, buscarItensComboPorIdCombo, criarCombo } from "../repository/comboRepository.js";
+import { adicionarItemCombo, buscarCombos, buscarItensComboPorIdCombo, criarCombo } from "../repository/comboRepository.js";
 import { BuscaDetalhesId, BuscaProdutoId, BuscarIdCategoria, BuscarImagens } from "../repository/produtoRepository.js";
 
 const comboEndpoints = Router();
+
+
+comboEndpoints.post('/combo', async (req, resp) => {
+    try{
+        const combo = req.body
+
+        if(!combo.nome)
+            throw new Error('O nome do combo é obrigatório.')
+        if(!combo.preco)
+            throw new Error('O preço do combo é obrigatório.')
+
+        const resposta = await criarCombo(combo)
+        
+        resp.send(resposta)
+    }
+    catch(err){
+        resp.status(500).send({
+            erro: err.message
+        })
+    }
+})
+
+
+comboEndpoints.post('/combo/item', async (req, resp) => {
+    try{
+        const item = req.body
+
+        if(!item.id_combo || isNaN(item.id_combo))
+            throw new Error('ID do combo não definido ou em formato errado.')
+        if(!item.id_produto || isNaN(item.id_produto))
+            throw new Error('ID do produto não definido ou em formato errado.')
+
+        const resposta = await adicionarItemCombo(item)
+
+        resp.send(resposta)
+    }
+    catch(err){
+        resp.status(500).send({
+            erro: err.message
+        })
+    }
+})
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 // Buscando

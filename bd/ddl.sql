@@ -138,14 +138,12 @@ create table tb_combo (
 	id_combo int primary key auto_increment,
 	nm_combo varchar(250) not null,
 	vl_preco decimal(7, 2) not null,
-	qtd_estoque int not null
 );
 
 create table tb_combo_item (
 	id_combo_item int primary key auto_increment,
 	id_combo int not null,
 	id_produto int not null,
-	qtd_itens int not null,
     foreign key (id_combo) references tb_combo(id_combo),
     foreign key (id_produto) references tb_produto(id_produto)
 );

@@ -1,17 +1,29 @@
 import conexao from './connection.js'
 
-export async function criarCombo () {
-    const sql = `insert into tb_combo`;
+
+
+
+
+export async function criarCombo(combo) {
+    const sql = `insert into tb_combo(nm_combo, vl_preco)
+                               values(?, ?)`;
  
-    const [resp] = await conexao.query(sql);
-    console.log(resp);
-    return resp;
+    const [resp] = await conexao.query(sql, [combo.nome, combo.preco]);
+
+    combo.id = resp.insertId
+
+    return combo
 } 
 
-export async function adicionarItem() {
-    const sql = ``;
+export async function adicionarItemCombo(item) {
+    const sql = `insert into tb_combo_item(id_combo, id_produto)
+                                    values(?, ?)`;
 
+    const [resp] = await conexao.query(sql, [item.id_combo, item.id_produto])
 
+    item.id = resp.insertId
+
+    return item
 }
 
 // Buscando 
