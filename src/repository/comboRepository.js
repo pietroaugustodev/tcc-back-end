@@ -13,3 +13,31 @@ export async function adicionarItem() {
 
 
 }
+
+// Buscando 
+
+
+export async function buscarCombos() {
+    const comando = `select id_combo 	as id,
+                            nm_combo	as nome,
+                            vl_preco	as preco,
+                            qtd_estoque	as estoque
+                       from tb_combo`
+
+    const [resp] = await conexao.query(comando, [])
+    
+    return resp
+}
+
+export async function buscarItensComboPorIdCombo(id){
+    const comando = `select id_combo_item  as id,
+                            id_combo,
+                            id_produto,
+                            qtd_itens
+                       from tb_combo_item
+                      where id_combo = ?`
+
+    const [resp] = await conexao.query(comando, [id])
+
+    return resp;
+}
