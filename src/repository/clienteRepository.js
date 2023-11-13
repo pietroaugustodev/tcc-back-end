@@ -33,6 +33,18 @@ export async function cadastroEndereco(endereco){
     return endereco
 }
 
+export async function cadastroEnderecoAssinatura(endereco){
+    const comando = `insert into tb_endereco(id_cliente, ds_cep, ds_rua, ds_cidade, ds_complemento, nr_endereco)
+                                    values  (?, ?, ?, ?, ?, ?)`
+
+
+    const [resp] = await conexao.query(comando, [endereco.idCliente, endereco.cep, endereco.rua, endereco.cidade, endereco.complemento, endereco.numero])
+
+    endereco.id = resp.insertId
+
+    return endereco
+}
+
 export async function cadastroCartao(info) {
     const comando = ` insert into tb_cartoes (id_cliente, ds_identidade_titular, ds_nome_titular, ds_cvv, ds_validade, nr_cartao)
                       values (?, ?, ?, ?, ?, ?);
@@ -149,6 +161,23 @@ export async function buscarEnderecosPorIdCliente(idCliente){
 
     const [resp] = await conexao.query(comando, [idCliente])
 
+    return resp;
+}
+
+export async function buscarClienteId (idCliente) {
+    const sql = `
+                SELECT id_cliente,
+                        nm_cliente as nome,
+                        ds_telefone as telefone,
+                        ds_cpf as cpf,
+                        dt_nascimento as nascimento,
+                        ds_email as email,
+                        dt_cadastro as cadastro
+                FROM tb_cliente
+                WHERE id_cliente = ?
+    `;
+
+    const [resp] = await conexao.query(sql, [idCliente]);
     return resp;
 }
 

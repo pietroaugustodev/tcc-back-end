@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { alterarStatus, buscarClientePorId, buscarClientePorNome, buscarItemsPedidoPorIdPedido, buscarPedidoPorIdPedido, buscarPedidosPorCodigo, buscarPedidosPorData, buscarPedidosPorFormaPagamento, buscarPedidosPorIdCliente, buscarPedidosPorStatus, buscarTodosPedidos, cadastrarItemPedido, cadastrarPedido, ordenarClientePorNome, ordenarPedidosPorData, ordenarPedidosPorFaturamento } from "../repository/pedidoRepository.js";
+import { alterarStatus, buscarClientePorId, buscarClientePorNome, buscarItemsPedidoPorIdPedido, buscarPedidoPorIdPedido, buscarPedidosPorCodigo, buscarPedidosPorData, buscarPedidosPorFormaPagamento, buscarPedidosPorIdCliente, buscarPedidosPorStatus, buscarTodosPedidos, cadastrarItemPedido, cadastrarPedido, ordenarClientePorNome, ordenarPedidosPorData, ordenarPedidosPorFaturamento, avaliacaoPedido } from "../repository/pedidoRepository.js";
 import { BuscaDetalhesId, BuscaProdutoId, BuscarIdCategoria, BuscarImagens } from "../repository/produtoRepository.js";
 import { buscarCartaoPorIdCartao, buscarEnderecoPorIdEndereco } from "../repository/clienteRepository.js";
 
@@ -248,6 +248,19 @@ pedidoEndpoints.get('/pedido/:id', async (req, resp) => {
     }
 })
 
+pedidoEndpoints.get('/pedido/cliente/:id', async (req, resp) => {
+    try {
+        const {id} = req.params;
+        const resposta = await buscarPedidosPorIdCliente(id);
+        resp.send(resposta)
+
+    } catch(err){
+        resp.status(500).send({
+            erro: err.message
+        })
+    }
+})
+
 
 
 
@@ -281,5 +294,17 @@ pedidoEndpoints.put('/pedido/status', async (req, resp) => {
     }
 })
 
+pedidoEndpoints.put('/pedido/:id/avaliacao/:avaliacao', async (req, resp) => {
+    try {
+        const id = req.params.id;
+        const avaliacao = req.params.avaliacao;
 
+        const resposta = avaliacaoPedido(avaliacao, id);
+        resp.send(resposta);
+    } catch(err){
+        resp.status(500).send({
+            erro: err.message
+        })
+    }
+})
 export default pedidoEndpoints

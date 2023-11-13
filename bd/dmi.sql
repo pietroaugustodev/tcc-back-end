@@ -1,5 +1,4 @@
 -- buscando adm 
-
 select id_admin   as id, 
        ds_email   as email,
        nm_usuario as nome,

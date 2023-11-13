@@ -324,3 +324,14 @@ export async function alterarStatus(novoStatus, id){
     
     return resp.affectedRows
 }
+
+export async function avaliacaoPedido (avaliacao, id) {
+    const sql = `
+                UPDATE bunaShiki.tb_pedido
+                SET ds_avaliacao = ? 
+                WHERE id_pedido = ?;
+    `
+    const [resp] = await conexao.query(sql, [avaliacao, id]);
+
+    return resp.affectedRows;
+}
