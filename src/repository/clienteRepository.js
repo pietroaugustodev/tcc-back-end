@@ -148,6 +148,23 @@ export async function buscarTodosEnderecos(idCliente){
     return resp;
 }
 
+export async function buscarClienteId (idCliente) {
+    const sql = `
+                SELECT id_cliente,
+                        nm_cliente as nome,
+                        ds_telefone as telefone,
+                        ds_cpf as cpf,
+                        dt_nascimento as nascimento,
+                        ds_email as email,
+                        dt_cadastro as cadastro
+                FROM tb_cliente
+                WHERE id_cliente = ?
+    `;
+
+    const [resp] = await conexao.query(sql, [idCliente]);
+    return resp;
+}
+
 
 
 // Alterando 
