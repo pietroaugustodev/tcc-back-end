@@ -82,7 +82,7 @@ export async function BuscarRepetido(busca){
     return resp[0]
 }
 
-export async function buscarTodosCartoes (idCliente) {
+export async function buscarCartoesPorIdCliente (idCliente) {
     const comando = `select id_cartoes              as id,
                             id_cliente,
                             ds_identidade_titular	as identidade,
@@ -96,6 +96,22 @@ export async function buscarTodosCartoes (idCliente) {
                 const [resp] = await conexao.query(comando, [idCliente])
 
     return resp; 
+}
+
+export async function buscarCartaoPorIdCartao(id) {
+    const comando = `select id_cartoes              as id,
+                            id_cliente,
+                            ds_identidade_titular	as identidade,
+                            ds_nome_titular         as nome,
+                            ds_cvv			        as cvv,
+                            ds_validade 	        as complemento,
+                            nr_cartao		        as numero
+                       from tb_cartoes
+                      where id_cartoes = ? `
+
+    const [resp] = await conexao.query(comando, [id])
+    
+    return resp[0]
 }
 
 export async function Login(email, senha){
@@ -132,7 +148,7 @@ export async function buscarEnderecoPorIdEndereco(id){
 }
 
 
-export async function buscarTodosEnderecos(idCliente){
+export async function buscarEnderecosPorIdCliente(idCliente){
     const comando = `select id_endereco     as id,
                             id_cliente,
                             ds_cep			as cep,

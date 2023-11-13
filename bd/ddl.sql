@@ -111,6 +111,7 @@ create table tb_pedido (
 	id_pedido int primary key auto_increment,
 	id_cliente int not null,
     id_endereco_entrega int not null,
+	id_cartao int not null,
 	tp_entrega varchar(100) not null,
 	tp_forma_pagamento varchar(100) not null ,
 	dt_pedido datetime not null,
@@ -137,14 +138,12 @@ create table tb_combo (
 	id_combo int primary key auto_increment,
 	nm_combo varchar(250) not null,
 	vl_preco decimal(7, 2) not null,
-	qtd_estoque int not null
 );
 
 create table tb_combo_item (
 	id_combo_item int primary key auto_increment,
 	id_combo int not null,
 	id_produto int not null,
-	qtd_itens int not null,
     foreign key (id_combo) references tb_combo(id_combo),
     foreign key (id_produto) references tb_produto(id_produto)
 );

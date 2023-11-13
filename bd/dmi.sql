@@ -44,5 +44,5 @@ insert into tb_categoria(nm_categoria, img_categoria)
 				values('Acessórios', '/assets/images/categorias/acessorios.jpg');        
 
 -- Inserindo pedido
-insert into tb_pedido(id_cliente, id_endereco_entrega, tp_entrega, tp_forma_pagamento, dt_pedido, dt_entrega_pedido, ds_situacao, vl_subtotal, vl_frete, vl_total, ds_avaliacao)
-				values  (1, 1, '000-000', 'Entrega Express', 'Cartão de Crédito', now(), '2023-06-23', 'Aguardando pagamento', 300.00, 11.00, 311.00, 5);
+insert into tb_pedido(id_cliente, id_endereco_entrega, id_cartao, tp_entrega, tp_forma_pagamento, dt_pedido, dt_entrega_pedido, ds_situacao, vl_subtotal, vl_frete, vl_total, ds_avaliacao)
+				values  (1, 1, 2, 'Entrega Express', 'Cartão', now(), '2023-06-23', 'Aguardando pagamento', 300.00, 11.00, 311.00, 5);

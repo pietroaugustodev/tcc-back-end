@@ -1,12 +1,50 @@
 import conexao from "./connection.js"
 
 
+
+
+
+// Cadastrando
+
+export async function cadastrarPedido(pedido){
+    const comando = `insert into tb_pedido(id_cliente, id_endereco_entrega, id_cartao, tp_entrega, tp_forma_pagamento, dt_pedido, dt_entrega_pedido, ds_situacao, vl_subtotal, vl_frete, vl_total, ds_avaliacao)
+                                    values(?, ?, ?, ?, ?, now(), ?, 'Pedido realizado' ,  ?, ?, ?, 0)`
+
+    const [resp] = await conexao.query(comando, [pedido.id_cliente, pedido.id_endereco, pedido.id_cartao, pedido.tp_entrega, pedido.forma_pagamento, pedido.dt_entrega, pedido.subtotal, pedido.frete, pedido.total])                            
+
+    pedido.id = resp.insertId
+
+    return pedido
+}
+
+
+export async function cadastrarItemPedido(item){
+    const comando = `insert into tb_pedido_item(id_pedido, id_produto, qtd_itens)
+                                        values(?, ?, ?)`
+
+    const [resp] = await conexao.query(comando, [item.id_pedido, item.id_produto, item.qtd])
+
+    item.id = resp.insertId
+
+    return item;
+}
+
+
+
+
+
+
+
+
+
+
 // Buscando
  
 export async function buscarTodosPedidos(){
     const comando = `select id_pedido           as id,
                             id_cliente,
                             id_endereco_entrega as id_endereco,
+                            id_cartao,
                             tp_entrega,
                             tp_forma_pagamento  as forma_pagamento,
                             dt_pedido,
@@ -27,6 +65,7 @@ export async function buscarPedidosPorStatus(status){
     const comando = `select id_pedido           as id,
                             id_cliente,
                             id_endereco_entrega as id_endereco,
+                            id_cartao,
                             tp_entrega,
                             tp_forma_pagamento  as forma_pagamento,
                             dt_pedido,
@@ -48,6 +87,7 @@ export async function buscarPedidosPorFormaPagamento(forma){
     const comando = `select id_pedido           as id,
                             id_cliente,
                             id_endereco_entrega as id_endereco,
+                            id_cartao,
                             tp_entrega,
                             tp_forma_pagamento  as forma_pagamento,
                             dt_pedido,
@@ -69,6 +109,7 @@ export async function buscarPedidosPorData(data) {
     const comando = `select id_pedido           as id,
                             id_cliente,
                             id_endereco_entrega as id_endereco,
+                            id_cartao,
                             tp_entrega,
                             tp_forma_pagamento  as forma_pagamento,
                             dt_pedido,
@@ -90,6 +131,7 @@ export async function buscarPedidosPorCodigo(busca){
     const comando = `select id_pedido           as id,
                             id_cliente,
                             id_endereco_entrega as id_endereco,
+                            id_cartao,
                             tp_entrega,
                             tp_forma_pagamento  as forma_pagamento,
                             dt_pedido,
@@ -143,6 +185,7 @@ export async function ordenarPedidosPorFaturamento(){
     const comando = ` select    id_pedido           as id,
                                 id_cliente,
                                 id_endereco_entrega as id_endereco,
+                                id_cartao,
                                 tp_entrega,
                                 tp_forma_pagamento  as forma_pagamento,
                                 dt_pedido,
@@ -164,6 +207,7 @@ export async function buscarPedidosPorIdCliente(id){
     const comando = `select id_pedido           as id,
                             id_cliente,
                             id_endereco_entrega as id_endereco,
+                            id_cartao,
                             tp_entrega,
                             tp_forma_pagamento  as forma_pagamento,
                             dt_pedido,
@@ -201,6 +245,7 @@ export async function ordenarPedidosPorData(){
     const comando = `select  id_pedido           as id,
                              id_cliente,
                              id_endereco_entrega as id_endereco,
+                             id_cartao,
                              tp_entrega,
                              tp_forma_pagamento  as forma_pagamento,
                              dt_pedido,
@@ -222,6 +267,7 @@ export async function buscarPedidoPorIdPedido(id){
     const comando = `select id_pedido           as id,
                             id_cliente,
                             id_endereco_entrega as id_endereco,
+                            id_cartao,
                             tp_entrega,
                             tp_forma_pagamento  as forma_pagamento,
                             dt_pedido,
