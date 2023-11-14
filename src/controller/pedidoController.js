@@ -261,20 +261,6 @@ pedidoEndpoints.get('/pedido/cliente/:id', async (req, resp) => {
     }
 })
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 // Alterando 
 
 pedidoEndpoints.put('/pedido/status', async (req, resp) => {
@@ -307,4 +293,5 @@ pedidoEndpoints.put('/pedido/:id/avaliacao/:avaliacao', async (req, resp) => {
         })
     }
 })
+
 export default pedidoEndpoints
