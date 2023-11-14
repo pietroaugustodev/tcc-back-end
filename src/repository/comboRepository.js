@@ -6,7 +6,7 @@ import conexao from './connection.js'
 
 export async function criarCombo(combo) {
     const sql = `insert into tb_combo(nm_combo, vl_preco)
-                               values(?, ?) (nm_combo, vl_preco, qtd_estoque)`;
+                               values(?, ?)`;
  
     const [resp] = await conexao.query(sql, [combo.nome, combo.preco]);
 
