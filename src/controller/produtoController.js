@@ -194,7 +194,7 @@ produtoEndpoints.get('/filtro/produtos/adm/:id', async (req, resp) =>{
         for(let cont = 0; cont < produtosFiltrados.length; cont ++){
             produtosFiltrados[cont].admin = await BuscarIdAdm(produtosFiltrados[cont].id_admin) 
             produtosFiltrados[cont].categoria = await BuscarIdCategoria(produtosFiltrados[cont].id_categoria)
-            const detalhesProdutos = await BuscaDetalhesId(produtosFiltrados[cont].id)
+            const detalhesProdutos = await BuscaDetalhesId(produtosFiltrados[cont].id_detalhe)
             produtosFiltrados[cont].detalhes = detalhesProdutos
             const respImagens = await BuscarImagens(produtosFiltrados[cont].id)
             produtosFiltrados[cont].imagem = respImagens[0].caminho
@@ -217,7 +217,7 @@ produtoEndpoints.get('/filtro/produtos/categorias/:id', async (req, resp) => {
         for(let cont = 0; cont < produtosFiltrados.length; cont ++){
             produtosFiltrados[cont].admin = await BuscarIdAdm(produtosFiltrados[cont].id_admin) 
             produtosFiltrados[cont].categoria = await BuscarIdCategoria(produtosFiltrados[cont].id_categoria)
-            const detalhesProdutos = await BuscaDetalhesId(produtosFiltrados[cont].id)
+            const detalhesProdutos = await BuscaDetalhesId(produtosFiltrados[cont].id_detalhe)
             produtosFiltrados[cont].detalhes = detalhesProdutos
             const respImagens = await BuscarImagens(produtosFiltrados[cont].id)
             produtosFiltrados[cont].imagem = respImagens[0].caminho
@@ -252,7 +252,7 @@ produtoEndpoints.get('/filtro/produtos/ordenar/:coluna', async (req, resp) => {
         for(let cont = 0; cont < resposta.length; cont ++){
             resposta[cont].admin = await BuscarIdAdm(resposta[cont].id_admin) 
             resposta[cont].categoria = await BuscarIdCategoria(resposta[cont].id_categoria) 
-            const detalhesProdutos = await BuscaDetalhesId(resposta[cont].id)
+            const detalhesProdutos = await BuscaDetalhesId(resposta[cont].id_detalhe)
             resposta[cont].detalhes = detalhesProdutos
             const respImagens = await BuscarImagens(resposta[cont].id)
             resposta[cont].imagem = respImagens[0].caminho
@@ -282,7 +282,7 @@ produtoEndpoints.get('/filtro/produtos/disponivelAssinatura/:valor', async (req,
         for(let cont = 0; cont < produtosFiltrados.length; cont ++){
             produtosFiltrados[cont].admin = await BuscarIdAdm(produtosFiltrados[cont].id_admin) 
             produtosFiltrados[cont].categoria = await BuscarIdCategoria(produtosFiltrados[cont].id_categoria)
-            const detalhesProdutos = await BuscaDetalhesId(produtosFiltrados[cont].id)
+            const detalhesProdutos = await BuscaDetalhesId(produtosFiltrados[cont].id_detalhe)
             produtosFiltrados[cont].detalhes = detalhesProdutos
             const respImagens = await BuscarImagens(produtosFiltrados[cont].id)
             produtosFiltrados[cont].imagem = respImagens[0].caminho
@@ -307,7 +307,7 @@ produtoEndpoints.get('/filtro/produtos/pesquisa/:valor', async (req, resp) => {
         for(let cont = 0; cont < resposta.length; cont ++){
             resposta[cont].admin = await BuscarIdAdm(resposta[cont].id_admin) 
             resposta[cont].categoria = await BuscarIdCategoria(resposta[cont].id_categoria) 
-            const detalhesProdutos = await BuscaDetalhesId(resposta[cont].id)
+            const detalhesProdutos = await BuscaDetalhesId(resposta[cont].id_detalhe)
             resposta[cont].detalhes = detalhesProdutos
             const respImagens = await BuscarImagens(resposta[cont].id)
             resposta[cont].imagem = respImagens[0].caminho
@@ -344,10 +344,16 @@ produtoEndpoints.get('/filtro/produtos/pesquisa/:valor', async (req, resp) => {
 produtoEndpoints.get('/produto/:id', async (req, resp) => {
     try{
         const {id} = req.params
-        if(!id)
+
+        if(!id || id === 0)
             throw new Error('Id produto não identificado')
 
         const resposta = await BuscaProdutoId(id)
+        resposta.admin = await BuscarIdAdm(resposta.id_admin) 
+        resposta.categoria = await BuscarIdCategoria(resposta.id_categoria) 
+        resposta.detalhes = await BuscaDetalhesId(resposta.id_detalhe)
+        resposta.imagens = await BuscarImagens(resposta.id)
+
 
         resp.send(resposta)
     }
@@ -509,7 +515,7 @@ produtoEndpoints.delete('/deletar/produto', async (req, resp) => {
             throw new Error('Não foi possivel excluir o produto')
         if(respostaDetalhes !== 1)
             throw new Error('Não foi possivel excluir os detalhes')
-        if(respostaImagens !== 1)
+        if(respostaImagens === 0)
             throw new Error('Não foi possivel excluir as imagens')
 
         resp.status(204).send()
