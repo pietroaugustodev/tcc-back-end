@@ -398,7 +398,34 @@ produtoEndpoints.get('/detalhes/:id', async (req, resp) => {
     }
 })
 
+produtoEndpoints.get('/produtos/sugestoes', async (req, resp) => {
+    try{
+        let produtos = []
+        for(let cont = 1; cont <= 8; cont++){
+            let produtosCategoria = await filtrarProdutosPorCategorias(cont)
+            if(produtosCategoria[0])
+                produtos.push(produtosCategoria[0])
+            if(produtosCategoria[1])
+                produtos.push(produtosCategoria[1])
+        }
 
+        for(let cont = 0; cont < produtos.length; cont ++){
+            produtos[cont].admin = await BuscarIdAdm(produtos[cont].id_admin) 
+            produtos[cont].categoria = await BuscarIdCategoria(produtos[cont].id_categoria) 
+            const detalhesProdutos = await BuscaDetalhesId(produtos[cont].id_detalhe)
+            produtos[cont].detalhes = detalhesProdutos
+            const respImagens = await BuscarImagens(produtos[cont].id)
+            produtos[cont].imagem = respImagens[0].caminho
+        }
+        
+        resp.send(produtos)
+    }
+    catch(err){
+        resp.status(500).send({
+            erro: err.message
+        })
+    }
+})
 
 
 
