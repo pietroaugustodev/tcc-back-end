@@ -87,19 +87,21 @@ pedidoEndpoints.get('/pedidos', async (req, resp) => {
     }
 })
 
-pedidoEndpoints.get ('/pedidos/primeiro-item', async (req, resp) => {
+pedidoEndpoints.get('/aaab/:id', async (req, resp) => {
+    const {id} = req.params;
+    const item = await buscarItemsPedidoPorIdPedido(id);
+    resp.send(item)
+})
+
+pedidoEndpoints.get('/pedidos/primeiro-item/:id', async (req, resp) => {
     try {
-        let pedidos = await buscarTodosPedidosPrimeiroProduto();
+        const {id} = req.params;
+        const pedidos = await buscarPedidosPorIdCliente(id);
         let array = [];
-        const pedidosUnicos = {};
-
+        
         for (let item of pedidos) {
-            const { id_pedido } = item;
-
-            if (!pedidosUnicos[id_pedido]) {
-                array.push(item);
-                pedidosUnicos[id_pedido] = true;
-            }
+            const itens = await buscarItemsPedidoPorIdPedido(item.id);
+            array.push(itens[0]);
         };
 
     resp.send(array)

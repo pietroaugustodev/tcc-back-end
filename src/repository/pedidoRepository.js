@@ -61,6 +61,7 @@ export async function buscarTodosPedidos(){
     return resp
 }
 
+
 export async function buscarTodosPedidosPrimeiroProduto(){
     const comando = `select id_pedido_item,
                             id_pedido,
