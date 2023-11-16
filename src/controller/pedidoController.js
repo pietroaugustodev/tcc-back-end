@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { alterarStatus, buscarClientePorId, buscarClientePorNome, buscarItemsPedidoPorIdPedido, buscarPedidoPorIdPedido, buscarPedidosPorCodigo, buscarPedidosPorData, buscarPedidosPorFormaPagamento, buscarPedidosPorIdCliente, buscarPedidosPorStatus, buscarTodosPedidos, cadastrarItemPedido, cadastrarPedido, ordenarClientePorNome, ordenarPedidosPorData, ordenarPedidosPorFaturamento, avaliacaoPedido } from "../repository/pedidoRepository.js";
+import { alterarStatus, buscarClientePorId, buscarClientePorNome, buscarItemsPedidoPorIdPedido, buscarPedidoPorIdPedido, buscarPedidosPorCodigo, buscarPedidosPorData, buscarPedidosPorFormaPagamento, buscarPedidosPorIdCliente, buscarPedidosPorStatus, buscarTodosPedidos, cadastrarItemPedido, cadastrarPedido, ordenarClientePorNome, ordenarPedidosPorData, ordenarPedidosPorFaturamento, avaliacaoPedido, buscarTodosPedidosPrimeiroProduto} from "../repository/pedidoRepository.js";
 import { BuscaDetalhesId, BuscaProdutoId, BuscarIdCategoria, BuscarImagens } from "../repository/produtoRepository.js";
 import { buscarCartaoPorIdCartao, buscarEnderecoPorIdEndereco } from "../repository/clienteRepository.js";
 
@@ -81,6 +81,30 @@ pedidoEndpoints.get('/pedidos', async (req, resp) => {
         resp.send(pedidosFiltrados)
     }
     catch(err){
+        resp.status(500).send({
+            erro: err.message
+        })
+    }
+})
+
+pedidoEndpoints.get ('/pedidos/primeiro-item', async (req, resp) => {
+    try {
+        let pedidos = await buscarTodosPedidosPrimeiroProduto();
+        let array = [];
+        const pedidosUnicos = {};
+
+        for (let item of pedidos) {
+            const { id_pedido } = item;
+
+            if (!pedidosUnicos[id_pedido]) {
+                array.push(item);
+                pedidosUnicos[id_pedido] = true;
+            }
+        };
+
+    resp.send(array)
+
+    } catch(err){
         resp.status(500).send({
             erro: err.message
         })

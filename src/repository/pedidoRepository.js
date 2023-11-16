@@ -61,6 +61,18 @@ export async function buscarTodosPedidos(){
     return resp
 }
 
+export async function buscarTodosPedidosPrimeiroProduto(){
+    const comando = `select id_pedido_item,
+                            id_pedido,
+                            id_produto,
+                            qtd_itens as qtd
+                       from tb_pedido_item;`
+
+    const [resp] = await conexao.query(comando)
+                             
+    return resp
+}
+
 export async function buscarPedidosPorStatus(status){
     const comando = `select id_pedido           as id,
                             id_cliente,

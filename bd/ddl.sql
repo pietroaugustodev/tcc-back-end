@@ -83,6 +83,7 @@ create table tb_assinatura (
 	dt_inicio datetime not null,
 	dt_fim date null,
 	vl_mensalidade decimal(6,2) not null,
+	ds_situacao varchar(50) not null,
     foreign key (id_cliente) references tb_cliente(id_cliente),
     foreign key (id_endereco) references tb_endereco(id_endereco)
 );
