@@ -129,13 +129,14 @@ export async function BuscaDetalhesId(id) {
 }
 
 export async function BuscarIdCategoria(id){
-  const comando = `select nm_categoria  as categoria
+  const comando = `select nm_categoria  as categoria,
+                          img_categoria as img
                      from tb_categoria
                     where id_categoria = ?`
 
   const [resp] = await conexao.query(comando, [id])
 
-  return resp[0].categoria
+  return resp[0]
 }
 
 export async function BuscarIdAdm(id){
