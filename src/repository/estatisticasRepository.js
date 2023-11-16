@@ -21,7 +21,7 @@ export async function buscarClientesEntreDatas(dtInicio, dtFim){
                        from tb_cliente
                       where dt_cadastro between ? and ? `
 
-    const resp = await conexao.query(comando, [dtInicio, dtFim])    
+    const [resp] = await conexao.query(comando, [dtInicio, dtFim])    
     
     return resp[0]
 }
