@@ -20,30 +20,6 @@ export async function procurarAssinatura () {
 
 export async function procurarAssinaturaId (id) {
     const sql = `
-                SELECT 
-                    prod.id_produto,
-                    ai.id_assinatura,
-                    ai.qtd_itens,
-                    ass.dt_fim,
-                    ass.vl_mensalidade,
-                    prod.nm_produto,
-                    prod.vl_preco
-                FROM
-                    tb_assinatura_item AS ai
-                INNER JOIN
-                    tb_assinatura AS ass ON ass.id_assinatura = ai.id_assinatura
-                INNER JOIN
-                    tb_produto AS prod ON prod.id_produto = ai.id_produto
-                WHERE
-                    ass.id_assinatura = ?;
- 
-    `;
-    const [resp] = await conexao.query(sql, id);
-    return resp;
-}
-
-export async function procurarAssinaturaIdCompleto (id) {
-    const sql = `
             SELECT 
                 prod.id_produto,
                 ai.id_assinatura,
@@ -70,6 +46,41 @@ export async function procurarAssinaturaIdCompleto (id) {
             INNER JOIN
                 tb_endereco as ende on ass.id_endereco = ende.id_endereco
             WHERE ass.id_cliente = ?;
+            
+    `;
+    const [resp] = await conexao.query(sql, id);
+    return resp;
+}
+
+export async function procurarAssinaturaIdCompleto (id) {
+    const sql = `
+            SELECT 
+                prod.id_produto,
+                ai.id_assinatura,
+                ai.qtd_itens,
+                ass.dt_inicio,
+                ass.ds_situacao,
+                ass.dt_fim,
+                ass.vl_mensalidade,
+                prod.nm_produto,
+                prod.vl_preco,
+                ass.id_cliente,
+                cli.ds_cpf,
+                cli.ds_telefone,
+                cli.ds_email,
+                ende.ds_rua,
+                cli.nm_cliente
+            FROM
+                tb_assinatura_item AS ai
+            INNER JOIN
+                tb_assinatura AS ass ON ass.id_assinatura = ai.id_assinatura
+            INNER JOIN
+                tb_produto AS prod ON prod.id_produto = ai.id_produto
+            INNER JOIN
+                tb_cliente as cli ON ass.id_cliente = cli.id_cliente
+            INNER JOIN
+                tb_endereco as ende on ass.id_endereco = ende.id_endereco
+            WHERE ass.id_assinatura = ?;
     `;
 
     const [resp] = await conexao.query(sql, id);
