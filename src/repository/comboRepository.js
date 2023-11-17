@@ -51,3 +51,37 @@ export async function buscarItensComboPorIdCombo(id){
 
     return resp;
 }
+
+export async function buscarIdsComboPorIdProduto(id) {
+    const comando = `select  id_combo   
+                        from tb_combo_item
+                        where id_produto = ?`
+
+    const [resp] = await conexao.query(comando, [id])
+
+    return resp
+}
+
+
+
+// Deletando 
+
+export async function deletarComboPorIdCombo(id){
+    const comando = `delete
+                       from tb_combo
+                      where id_combo = ?`
+    
+    const [resp] = await conexao.query(comando, [id])
+    
+    return resp.affectedRows
+}
+
+export async function deletarItensComboPorIdCombo(id){
+    const comando = `delete
+                       from tb_combo_item
+                      where id_combo = ?`
+        
+    const [resp] = await conexao.query(comando, [id])
+    
+    return resp.affectedRows
+}

@@ -35,8 +35,8 @@ create table tb_produto (
     id_admin					int not null,
 	id_categoria 				int not null,
 	nm_produto 					varchar(400) not null,
-	vl_preco 					decimal(5,2) not null,
-	vl_preco_promocional 		decimal(5,2) null,
+	vl_preco 					decimal(6, 2) not null,
+	vl_preco_promocional 		decimal(6, 2) null,
 	bt_disponivel_assinatura	boolean not null,
 	qtd_estoque 				int not null,
     foreign key (id_admin) references tb_admin(id_admin),
@@ -138,7 +138,7 @@ create table tb_pedido_item (
 create table tb_combo (
 	id_combo int primary key auto_increment,
 	nm_combo varchar(250) not null,
-	vl_preco decimal(7, 2) not null,
+	vl_preco decimal(7, 2) not null
 );
 
 create table tb_combo_item (
