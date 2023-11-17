@@ -178,7 +178,7 @@ export async function buscarClienteId (idCliente) {
     `;
 
     const [resp] = await conexao.query(sql, [idCliente]);
-    return resp;
+    return resp[0]
 }
 
 

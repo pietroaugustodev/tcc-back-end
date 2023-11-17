@@ -1,5 +1,6 @@
 import {Router } from "express";
-import { procurarAssinatura, novaAssinatura, inserirProdutosAssinatura, procurarAssinaturaId, verificarAssinatura, cancelarAssinatura, cancelarAssinaturaItens, buscarAssinaturas, buscarAssinaturasPorClienteOuId, buscarAssinaturasPorStatus, alterandoStatusAssinatura } from "../repository/assinaturaRepository.js";
+import { procurarAssinatura, novaAssinatura, inserirProdutosAssinatura, procurarAssinaturaId, verificarAssinatura, cancelarAssinatura, cancelarAssinaturaItens, buscarAssinaturas, buscarAssinaturasPorClienteOuId, buscarAssinaturasPorStatus, alterandoStatusAssinatura, ordenarAssinaturasPorPrecoMaiorAoMenor, ordenarAssinaturasPorPrecoMenorAoMaior } from "../repository/assinaturaRepository.js";
+import { buscarClienteId, buscarEnderecoPorIdEndereco } from "../repository/clienteRepository.js";
 
 const assinaturaEndpoints = Router();
 
@@ -47,6 +48,11 @@ assinaturaEndpoints.get('/assinaturas', async (req, resp) => {
     try{
         const assinaturas = await buscarAssinaturas()
         let assinaturasFiltradas = assinaturas.filter(assinatura => assinatura.situacao !== 'Cancelado')
+        
+        for(let cont = 0; cont < assinaturasFiltradas.length; cont++){
+            assinaturasFiltradas[cont].cliente = await buscarClienteId(assinaturasFiltradas[cont].id_cliente)
+            assinaturasFiltradas[cont].endereco = await buscarEnderecoPorIdEndereco(assinaturasFiltradas[cont].id_endereco)
+        }
 
         resp.send(assinaturasFiltradas)
     }
@@ -61,7 +67,11 @@ assinaturaEndpoints.get('/assinaturas/pesquisa/:pesquisa', async (req, resp) => 
     try{
         const {pesquisa} = req.params
 
-        const assinaturas = await buscarAssinaturasPorClienteOuId(pesquisa)
+        let assinaturas = await buscarAssinaturasPorClienteOuId(pesquisa)
+        for(let cont = 0; cont < assinaturas.length; cont++){
+            assinaturas[cont].cliente = await buscarClienteId(assinaturas[cont].id_cliente)
+            assinaturas[cont].endereco = await buscarEnderecoPorIdEndereco(assinaturas[cont].id_endereco)
+        }
 
         resp.send(assinaturas)
     }
@@ -71,14 +81,40 @@ assinaturaEndpoints.get('/assinaturas/pesquisa/:pesquisa', async (req, resp) => 
         })
     }
 })
+assinaturaEndpoints.get('/assinaturas/ordenar/:ordem', async (req, resp) => {
+    try{
+        const {ordem} = req.params
+        let assinaturas = []
+
+        if(ordem === 'Mais caro')
+            assinaturas = await ordenarAssinaturasPorPrecoMaiorAoMenor()
+        else if(ordem === 'Mais barato')
+            assinaturas = await ordenarAssinaturasPorPrecoMenorAoMaior()
+
+        for(let cont = 0; cont < assinaturas.length; cont++){
+            assinaturas[cont].cliente = await buscarClienteId(assinaturas[cont].id_cliente)
+            assinaturas[cont].endereco = await buscarEnderecoPorIdEndereco(assinaturas[cont].id_endereco)
+        }
+        resp.send(assinaturas)
+    }
+    catch(err){
+        resp.status(500).send({
+           erro: err.message
+        })
+    }
+} )
 
 
 assinaturaEndpoints.get('/assinaturas/status/:status', async (req, resp) => {
     try{
         const {status} = req.params 
 
-        const assinaturas = await buscarAssinaturasPorStatus(status)
+        let assinaturas = await buscarAssinaturasPorStatus(status)
 
+        for(let cont = 0; cont < assinaturas.length; cont++){
+            assinaturas[cont].cliente = await buscarClienteId(assinaturas[cont].id_cliente)
+            assinaturas[cont].endereco = await buscarEnderecoPorIdEndereco(assinaturas[cont].id_endereco)
+        }
         resp.send(assinaturas)
     }
     catch(err){
@@ -161,15 +197,5 @@ assinaturaEndpoints.put('/assinatura/status/:id/:status', async (req, resp) => {
     }
 })
 
-assinaturaEndpoints.get('/assinaturas/ordenar/:ordem', async (req, resp) => {
-    try{
-        
-    }
-    catch(err){
-        resp.status(500).send({
-           erro: err.message
-        })
-    }
-} )
 
 export default assinaturaEndpoints;
