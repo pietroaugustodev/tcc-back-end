@@ -44,7 +44,7 @@ export async function procurarAssinaturaId (id) {
 
 
 export async function buscarAssinaturas() {
-    const comando = `select id_assiantura   as id,
+    const comando = `select id_assinatura   as id,
                             id_cliente,
                             id_endereco,
                             dt_inicio,
@@ -59,8 +59,8 @@ export async function buscarAssinaturas() {
 }
 
 export async function buscarAssinaturasPorClienteOuId(valor) {
-    const comando = `   select id_assiantura   as id,
-                               id_cliente,
+    const comando = `   select id_assinatura   as id,
+                               tb_assinatura.id_cliente,
                                id_endereco,
                                dt_inicio,
                                dt_fim,
@@ -78,7 +78,7 @@ export async function buscarAssinaturasPorClienteOuId(valor) {
 }
 
 export async function ordenarAssinaturasPorPrecoMaiorAoMenor() {
-    const comando = `select id_assiantura   as id,
+    const comando = `select id_assinatura   as id,
                             id_cliente,
                             id_endereco,
                             dt_inicio,
@@ -94,7 +94,7 @@ export async function ordenarAssinaturasPorPrecoMaiorAoMenor() {
 }
 
 export async function ordenarAssinaturasPorPrecoMenorAoMaior() {
-    const comando = `select id_assiantura   as id,
+    const comando = `select id_assinatura   as id,
                             id_cliente,
                             id_endereco,
                             dt_inicio,
@@ -110,7 +110,7 @@ export async function ordenarAssinaturasPorPrecoMenorAoMaior() {
 }
 
 export async function buscarAssinaturasPorStatus(status){
-    const comando = `select id_assiantura   as id,
+    const comando = `select id_assinatura   as id,
                             id_cliente,
                             id_endereco,
                             dt_inicio,
@@ -190,8 +190,7 @@ export async function cancelarAssinatura(id) {
 // Alterando 
 
 export async function alterandoStatusAssinatura(id, status) {
-    const comando = `update
-                        from tb_assinatura
+    const comando = `update tb_assinatura
                         set ds_situacao = ?
                         where id_assinatura = ?`
 
