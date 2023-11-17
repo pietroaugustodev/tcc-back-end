@@ -139,8 +139,8 @@ export async function verificarAssinatura (id) {
  
 export async function novaAssinatura (info) {
     const sql = `
-                insert into tb_assinatura (id_cliente, id_endereco, dt_inicio, dt_fim, vl_mensalidade)
-                                    values(?, ?, curdate(), adddate(curdate(), interval 30 day), ?);
+                insert into tb_assinatura (id_cliente, id_endereco, dt_inicio, dt_fim, vl_mensalidade, ds_situacao)
+                                    values(?, ?, curdate(), adddate(curdate(), interval 30 day), ?, 'Pago');
     `;
 
     const resp = await conexao.query(sql, [info.idCliente, info.idEndereco, info.mensalidade]);
