@@ -1,5 +1,6 @@
 import { Router } from "express";
 import { cadastrarDetalhes, cadastrarProduto, cadastrarImagens, BuscarImagens, deletarProduto, deletarDetalhes, BuscarProdutos, BuscarIdCategoria, BuscarIdAdm, BuscaProdutoId,BuscaDetalhesId, AlterarDetalhesProduto, AlterarProduto, deletarImagem, deletarImagensPorProduto, buscarTodosAdms, buscarCategorias, filtrarProdutosPorAdm, filtrarProdutosPorCategorias,ordenarProdutosPorEstoqueDecrescente, ordenarProdutosPorEstoqueCrescente, ordenarProdutosPorPrecoDecrescente, ordenarProdutosPorPrecoPromocionalDecrescente, filtrarProdutosPorDisponibilidadeAssinatura, filtrarProdutosPorIdOuNome, buscarProdutosPorMarca, buscarProdutoPorDetalhes } from '../repository/produtoRepository.js';
+import { buscarIdsComboPorIdProduto, deletarComboPorIdCombo, deletarItensComboPorIdCombo } from "../repository/comboRepository.js";
 
 
 const produtoEndpoints = Router();
@@ -27,21 +28,18 @@ produtoEndpoints.post('/imagemproduto', async (req, resp) => {
 produtoEndpoints.post('/produto', async (req, resp) => {
     try {
         const infoDetalhes = {
-        intensidade: req.body.intensidade,
-        docura: req.body.docura,
-        acidez: req.body.acidez,
-        torra: req.body.torra,
-        descricao: req.body.descricao,
-        marca: req.body.marca,
-        peso: req.body.peso,
-        alergia: req.body.alergia,
-        dimensoes: req.body.dimensoes
-    };
+            intensidade: req.body.intensidade,
+            docura: req.body.docura,
+            acidez: req.body.acidez,
+            torra: req.body.torra,
+            descricao: req.body.descricao,
+            marca: req.body.marca,
+            peso: req.body.peso,
+            alergia: req.body.alergia,
+            dimensoes: req.body.dimensoes
+        };
 
-    const idDetalhe = await cadastrarDetalhes(infoDetalhes);
-
-    const infoProduto = {
-            idDetalhe: idDetalhe,
+        let infoProduto = {
             idAdm: req.body.idAdm,
             idCategoria: req.body.idCategoria,
             nome: req.body.nome,
@@ -51,19 +49,23 @@ produtoEndpoints.post('/produto', async (req, resp) => {
             estoque: req.body.estoque
         };
 
-    if (!infoProduto.nome) throw new Error('Por favor, selecione o nome do produto!');
-    if (!infoDetalhes.peso) throw new Error('Por favor, selecione o peso do produto!');
-    if (!infoProduto.estoque) throw new Error('Por favor, selecione a quantidade disponível no estoque!');
-    if (!infoDetalhes.marca) throw new Error('Por favor, insira a marca do produto!');
-    if (!infoProduto.preco) throw new Error('Por favor, selecione o preço do produto!');
-    if (infoProduto.preco == 0) throw new Error('Insira preço diferente de 0!');
-    if (!infoDetalhes.dimensoes) throw new Error('Por favor, insira as dimensões do produto');
-    if (!infoDetalhes.descricao) throw new Error('Por favor, insira uma descrição ao produto!');
-    if (!infoDetalhes.alergia) throw new Error('Por favor, preencha o campo sobre alergias!');
-    if (!infoProduto.idCategoria) throw new Error('Por favor, selecione a categoria!');
-     
-    const cadastro = await cadastrarProduto(infoProduto);
-    resp.send(cadastro);
+        if (!infoDetalhes.peso) throw new Error('Por favor, selecione o peso do produto!');
+        if (!infoProduto.nome) throw new Error('Por favor, selecione o nome do produto!');
+        if (!infoProduto.estoque) throw new Error('Por favor, selecione a quantidade disponível no estoque!');
+        if (!infoDetalhes.marca) throw new Error('Por favor, insira a marca do produto!');
+        if (!infoProduto.preco) throw new Error('Por favor, selecione o preço do produto!');
+        if (infoProduto.preco == 0) throw new Error('Insira preço diferente de 0!');
+        if (!infoDetalhes.dimensoes) throw new Error('Por favor, insira as dimensões do produto');
+        if (!infoDetalhes.descricao) throw new Error('Por favor, insira uma descrição ao produto!');
+        if (!infoDetalhes.alergia) throw new Error('Por favor, preencha o campo sobre alergias!');
+        if (!infoProduto.idCategoria) throw new Error('Por favor, selecione a categoria!');
+        
+        const idDetalhe = await cadastrarDetalhes(infoDetalhes);
+        infoProduto.idDetalhe = idDetalhe   
+
+        const cadastro = await cadastrarProduto(infoProduto);
+        
+        resp.send(cadastro);
     } catch (error) {
         resp.status(500).send({
             erro: error.message
@@ -543,6 +545,20 @@ produtoEndpoints.delete('/deletar/produto', async (req, resp) => {
             throw new Error('Id do produto não identificado ou inválido')
         if(!idDetalhe || idDetalhe === 0 || isNaN(idDetalhe))
             throw new Error('id do detalhe não identificado ou inválido')
+
+        const idsComboExcluir = await buscarIdsComboPorIdProduto(idProduto)
+        if(idsComboExcluir.length !== 0){
+            for(let cont = 0; cont < idsComboExcluir.length; cont++){
+                let itensCombo = await deletarItensComboPorIdCombo(idsComboExcluir[cont].id_combo)
+                if(itensCombo === 0)
+                    throw new Error(`Não foi possível excluir os itens do combo com o id ${idsComboExcluir[cont].id_combo}`)
+                
+                let respCombo = await deletarComboPorIdCombo(idsComboExcluir[cont].id_combo)
+                if(respCombo !== 1)
+                    throw new Error(`Não foi possível excluir o combo com o id ${idsComboExcluir[cont].id_combo}`)
+    
+            }
+        }
 
         const respostaImagens = await deletarImagensPorProduto(idProduto)
         const respostaProduto = await deletarProduto(idProduto)
