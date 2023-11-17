@@ -42,6 +42,90 @@ export async function procurarAssinaturaId (id) {
     return resp;
 }
 
+
+export async function buscarAssinaturas() {
+    const comando = `select id_assiantura   as id,
+                            id_cliente,
+                            id_endereco,
+                            dt_inicio,
+                            dt_fim,
+                            vl_mensalidade  as mensalidade,
+                            ds_situacao     as situacao
+                       from tb_assinatura`
+
+    const [resp] = await conexao.query(comando)
+
+    return resp
+}
+
+export async function buscarAssinaturasPorClienteOuId(valor) {
+    const comando = `   select id_assiantura   as id,
+                               id_cliente,
+                               id_endereco,
+                               dt_inicio,
+                               dt_fim,
+                               vl_mensalidade  as mensalidade,
+                               ds_situacao     as situacao
+                          from tb_assinatura
+                    inner join tb_cliente
+                            on tb_cliente.id_cliente = tb_assinatura.id_cliente
+                         where nm_cliente like ?
+                            or id_assinatura = ?`
+                        
+    const [resp] = await conexao.query(comando, [`%${valor}%`, valor])
+    
+    return resp
+}
+
+export async function ordenarAssinaturasPorPrecoMaiorAoMenor() {
+    const comando = `select id_assiantura   as id,
+                            id_cliente,
+                            id_endereco,
+                            dt_inicio,
+                            dt_fim,
+                            vl_mensalidade  as mensalidade,
+                            ds_situacao     as situacao
+                        from tb_assinatura
+                     order by vl_mensalidade desc`
+
+    const [resp] = await conexao.query(comando, [])
+
+    return resp
+}
+
+export async function ordenarAssinaturasPorPrecoMenorAoMaior() {
+    const comando = `select id_assiantura   as id,
+                            id_cliente,
+                            id_endereco,
+                            dt_inicio,
+                            dt_fim,
+                            vl_mensalidade  as mensalidade,
+                            ds_situacao     as situacao
+                        from tb_assinatura
+                        order by vl_mensalidade asc`
+
+    const [resp] = await conexao.query(comando, [])
+
+    return resp
+}
+
+export async function buscarAssinaturasPorStatus(status){
+    const comando = `select id_assiantura   as id,
+                            id_cliente,
+                            id_endereco,
+                            dt_inicio,
+                            dt_fim,
+                            vl_mensalidade  as mensalidade,
+                            ds_situacao     as situacao
+                       from tb_assinatura
+                      where ds_situacao = ?`
+
+    const [resp] = await conexao.query(comando, [status])
+
+    return resp
+}
+
+
 export async function verificarAssinatura (id) {
     const sql = `
                 select * from tb_assinatura where id_cliente = ?;
@@ -100,4 +184,18 @@ export async function cancelarAssinatura(id) {
 
     const [resp] = await conexao.query(sql, id);
     return resp;
+}
+
+
+// Alterando 
+
+export async function alterandoStatusAssinatura(id, status) {
+    const comando = `update
+                        from tb_assinatura
+                        set ds_situacao = ?
+                        where id_assinatura = ?`
+
+    const [resp] = await conexao.query(comando, [status, id])
+    
+    return resp.affectedRows
 }

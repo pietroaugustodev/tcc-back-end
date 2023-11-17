@@ -100,11 +100,16 @@ pedidoEndpoints.get('/pedidos/primeiro-item/:id', async (req, resp) => {
         let pedidos = await buscarPedidosPorIdCliente(id);
         let i = 0;
         
-        for (let item of pedidos) {
-            let itens = await buscarItemsPedidoPorIdPedido(item.id);
-            let item1 = itens[0];
-            pedidos[i].item1 = item1.id_produto;
-            ++i;
+        for (let cont = 0; cont < pedidos.length; cont++) {
+            let itens = await buscarItemsPedidoPorIdPedido(pedidos[cont].id);
+            let idProduto = itens[0].id_produto;
+
+            pedidos[cont].item = await BuscaProdutoId(idProduto)
+            pedidos[cont].item.categoria = await BuscarIdCategoria(pedidos[cont].item.id_categoria)
+            const respImagens = await BuscarImagens(idProduto)
+            pedidos[cont].item.imagem = respImagens[0].caminho
+            const detalhesProdutos = await BuscaDetalhesId(idProduto)
+            pedidos[cont].item.detalhes = detalhesProdutos
         };
 
         

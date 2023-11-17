@@ -1,5 +1,5 @@
 import {Router } from "express";
-import { procurarAssinatura, novaAssinatura, inserirProdutosAssinatura, procurarAssinaturaId, verificarAssinatura, cancelarAssinatura, cancelarAssinaturaItens } from "../repository/assinaturaRepository.js";
+import { procurarAssinatura, novaAssinatura, inserirProdutosAssinatura, procurarAssinaturaId, verificarAssinatura, cancelarAssinatura, cancelarAssinaturaItens, buscarAssinaturas, buscarAssinaturasPorClienteOuId, buscarAssinaturasPorStatus, alterandoStatusAssinatura } from "../repository/assinaturaRepository.js";
 
 const assinaturaEndpoints = Router();
 
@@ -42,6 +42,52 @@ assinaturaEndpoints.get('/verificar-assinatura/:id', async (req, resp) => {
     }
 })
 
+
+assinaturaEndpoints.get('/assinaturas', async (req, resp) => {
+    try{
+        const assinaturas = await buscarAssinaturas()
+        let assinaturasFiltradas = assinaturas.filter(assinatura => assinatura.situacao !== 'Cancelado')
+
+        resp.send(assinaturasFiltradas)
+    }
+    catch(err){
+        resp.status(500).send({
+            erro: err.message
+        })
+    }
+})
+
+assinaturaEndpoints.get('/assinaturas/pesquisa/:pesquisa', async (req, resp) => {
+    try{
+        const {pesquisa} = req.params
+
+        const assinaturas = await buscarAssinaturasPorClienteOuId(pesquisa)
+
+        resp.send(assinaturas)
+    }
+    catch(err){
+        resp.status(500).send({
+            erro: err.message
+        })
+    }
+})
+
+
+assinaturaEndpoints.get('/assinaturas/status/:status', async (req, resp) => {
+    try{
+        const {status} = req.params 
+
+        const assinaturas = await buscarAssinaturasPorStatus(status)
+
+        resp.send(assinaturas)
+    }
+    catch(err){
+        resp.status(500).send({
+            erro: err.message
+        })
+    }
+})
+
 // Inserindo
 
 assinaturaEndpoints.post('/concluir-assinatura', async (req, resp) => {
@@ -71,7 +117,7 @@ assinaturaEndpoints.post('/concluir-assinatura/produtos', async (req, resp) => {
 });
 
 
-// DELETANDO
+// Deletando
 
 assinaturaEndpoints.delete('/cancelar-assinatura/:id', async (req, resp) => {
     try {
@@ -90,5 +136,40 @@ assinaturaEndpoints.delete('/cancelar-assinatura/:id', async (req, resp) => {
         })
     }
 })
+
+
+// Alterando
+
+assinaturaEndpoints.put('/assinatura/status/:id/:status', async (req, resp) => {
+    try {
+        const id = Number(req.params.id)
+        const {status} = req.params
+
+        if(isNaN(id) || !id)
+            throw new Error('ID indefinido ou em tipo inválido')
+
+        const resposta = await alterandoStatusAssinatura(id, status)
+        if(resposta !== 1)
+            throw new Error('Não foi possível alterar o status')
+
+        resp.status(204).send()
+    }
+    catch(err){
+        resp.status(500).send({
+            erro: err.message
+        })
+    }
+})
+
+assinaturaEndpoints.get('/assinaturas/ordenar/:ordem', async (req, resp) => {
+    try{
+        
+    }
+    catch(err){
+        resp.status(500).send({
+           erro: err.message
+        })
+    }
+} )
 
 export default assinaturaEndpoints;
