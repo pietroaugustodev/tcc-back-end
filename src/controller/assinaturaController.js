@@ -1,5 +1,5 @@
 import {Router } from "express";
-import { procurarAssinatura, novaAssinatura, inserirProdutosAssinatura, procurarAssinaturaId, verificarAssinatura, cancelarAssinatura, cancelarAssinaturaItens, buscarAssinaturas, buscarAssinaturasPorClienteOuId, buscarAssinaturasPorStatus, alterandoStatusAssinatura, ordenarAssinaturasPorPrecoMaiorAoMenor, ordenarAssinaturasPorPrecoMenorAoMaior } from "../repository/assinaturaRepository.js";
+import { procurarAssinatura, novaAssinatura, inserirProdutosAssinatura, procurarAssinaturaId, verificarAssinatura, cancelarAssinatura, cancelarAssinaturaItens, buscarAssinaturas, buscarAssinaturasPorClienteOuId, buscarAssinaturasPorStatus, alterandoStatusAssinatura, ordenarAssinaturasPorPrecoMaiorAoMenor, ordenarAssinaturasPorPrecoMenorAoMaior, procurarAssinaturaIdCompleto } from "../repository/assinaturaRepository.js";
 import { buscarClienteId, buscarEnderecoPorIdEndereco } from "../repository/clienteRepository.js";
 
 const assinaturaEndpoints = Router();
@@ -21,6 +21,19 @@ assinaturaEndpoints.get('/procurar-assinatura/:id', async (req, resp) => {
     try {
         const id = req.params.id;
         const resposta = await procurarAssinaturaId(id);
+        resp.send(resposta);
+
+    } catch (error) {
+        resp.status(500).send({
+            erro: error.message
+        })
+    }
+});
+
+assinaturaEndpoints.get('/procurar-assinatura-completa/:id', async (req, resp) => {
+    try {
+        const id = req.params.id;
+        const resposta = await procurarAssinaturaIdCompleto(id);
         resp.send(resposta);
 
     } catch (error) {
