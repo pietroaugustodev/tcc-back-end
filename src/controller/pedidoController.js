@@ -13,12 +13,19 @@ const pedidoEndpoints = Router()
 pedidoEndpoints.post('/pedido', async (req, resp) => {
     try{
         const pedido = req.body
-
-        if(pedido.id_endereco === 0 || !pedido.id_endereco)
+        
+        
+        if(pedido.id_endereco === 0 || !pedido.id_endereco || isNaN(pedido.id_endereco))
             throw new Error('É obrigatório escolher o endereço para entrega.')
+
         if(!pedido.forma_pagamento)
             throw new Error(`É obrigatório escolher uma forma de pagamento.
-        Obs: se a forma de pagamento for pix, clique em cima da opção.`)
+            Obs: se a forma de pagamento for pix, clique em cima da opção.`)
+
+        if(pedido.forma_pagamento == 'Cartão' && (!pedido.id_cartao || pedido.id_cartao === 0 || isNaN(pedido.id_cartao)))
+            throw new Error(`É obrigatório escolher uma forma de pagamento.
+            Obs: se a forma de pagamento for pix, clique em cima da opção.`)
+       
         if(!pedido.tp_entrega)
             throw new Error('É obrigatório escolher um tipo de entrega, clique em cima da opção escolhida.')
 
