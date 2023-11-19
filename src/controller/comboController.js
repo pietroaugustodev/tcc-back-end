@@ -9,6 +9,8 @@ comboEndpoints.post('/combo', async (req, resp) => {
     try{
         const combo = req.body
 
+        if(!combo.id_admin || combo.id_admin === 0 || isNaN(combo.id_admin))
+            throw new Error('ID adm não definido ou em formato errado')
         if(!combo.nome)
             throw new Error('O nome do combo é obrigatório.')
         if(!combo.preco)
