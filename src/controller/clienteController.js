@@ -90,7 +90,7 @@ clienteEndpoints.post('/cartao/:num', async (req, resp) => {
     try {
         const infoCartao = req.body;
         infoCartao.id = Number(req.params.num);
-        console.log(infoCartao)
+        // console.log(infoCartao)
 
 
             if (infoCartao.numeroCartao.length !== 16 || !infoCartao.numeroCartao) 
