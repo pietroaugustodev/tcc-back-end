@@ -31,12 +31,26 @@ export async function adicionarItemCombo(item) {
 
 export async function buscarCombos() {
     const comando = `select id_combo 	as id,
+                            id_admin,
                             nm_combo	as nome,
                             vl_preco	as preco
                        from tb_combo`
 
     const [resp] = await conexao.query(comando, [])
     
+    return resp
+}
+
+export async function buscarCombosPorIdAdm(id) {
+    const comando = `select id_combo 	as id,
+                            id_admin,
+                            nm_combo	as nome,
+                            vl_preco	as preco
+                       from tb_combo
+                      where id_admin = ?`
+
+    const [resp] = await conexao.query(comando, [id])
+
     return resp
 }
 
@@ -52,12 +66,52 @@ export async function buscarItensComboPorIdCombo(id){
     return resp;
 }
 
+export async function ordenarCombosPorPrecoMaiorAoMenor() {
+    const comando = ` select id_combo 	as id,
+                             id_admin,
+                             nm_combo	as nome,
+                             vl_preco	as preco
+                        from tb_combo
+                    order by vl_preco desc`
+
+    const [resp] = await conexao.query(comando, [])
+
+    return resp
+}
+
+export async function ordenarCombosPorPrecoMenorAoMaior() {
+    const comando = `select id_combo 	as id,
+                            id_admin,
+                            nm_combo	as nome,
+                            vl_preco	as preco
+                        from tb_combo
+                        order by vl_preco asc`
+
+    const [resp] = await conexao.query(comando, [])
+
+    return resp
+}
+
 export async function buscarIdsComboPorIdProduto(id) {
     const comando = `select  id_combo   
                         from tb_combo_item
                         where id_produto = ?`
 
     const [resp] = await conexao.query(comando, [id])
+
+    return resp
+}
+
+export async function buscarCombosPorIdOuNome(valor) {
+    const comando = `select id_combo 	as id,
+                            id_admin,
+                            nm_combo	as nome,
+                            vl_preco	as preco
+                       from tb_combo
+                      where nm_combo like ?
+                         or id_combo = ?`
+
+    const [resp] = await conexao.query(comando, [`%${valor}%`, valor])
 
     return resp
 }
@@ -84,4 +138,35 @@ export async function deletarItensComboPorIdCombo(id){
     const [resp] = await conexao.query(comando, [id])
     
     return resp.affectedRows
+}
+
+
+
+
+
+
+
+// Alterando
+
+export async function alterarCombo(id, combo) {
+    const comando = `update tb_combo
+                        set id_admin = ?,
+                            nm_combo = ?,
+                            vl_preco = ?
+                      where id_combo = ?;`
+                    
+    const [resp] = await conexao.query(comando, [combo.id_admin, combo.nome, combo.preco, id])
+    
+    return resp.affectedRows
+}
+
+export async function alterarItemCombo(id, item) {
+    const comando = `update tb_combo_item
+                        set id_produto    = ?,
+                            id_combo      = ?
+                      where id_combo_item = ?;`
+
+    const [resp] = await conexao.query(comando, [item.id_produto, item.id_combo, id]) 
+    
+    return resp.affectedRows;
 }

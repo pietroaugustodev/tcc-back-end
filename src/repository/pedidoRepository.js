@@ -8,9 +8,9 @@ import conexao from "./connection.js"
 
 export async function cadastrarPedido(pedido){
     const comando = `insert into tb_pedido(id_cliente, id_endereco_entrega, id_cartao, tp_entrega, tp_forma_pagamento, dt_pedido, dt_entrega_pedido, ds_situacao, vl_subtotal, vl_frete, vl_total, ds_avaliacao)
-                                    values(?, ?, ?, ?, ?, now(), ?, 'Pedido realizado' ,  ?, ?, ?, 0)`
+                                    values(?, ?, ?, ?, ?, ?, ?, 'Pedido realizado' ,  ?, ?, ?, 0)`
 
-    const [resp] = await conexao.query(comando, [pedido.id_cliente, pedido.id_endereco, pedido.id_cartao, pedido.tp_entrega, pedido.forma_pagamento, pedido.dt_entrega, pedido.subtotal, pedido.frete, pedido.total])                            
+    const [resp] = await conexao.query(comando, [pedido.id_cliente, pedido.id_endereco, pedido.id_cartao, pedido.tp_entrega, pedido.forma_pagamento, pedido.dt_pedido, pedido.dt_entrega, pedido.subtotal, pedido.frete, pedido.total])                            
 
     pedido.id = resp.insertId
 
