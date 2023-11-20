@@ -14,7 +14,7 @@ admEndpoints.post('/adm', async (req, resp) => {
 
         const resposta = await Login(email, senha)
         if(!resposta)
-            throw new Error('Sem autorização')
+            throw new Error('Credencias inválidas')
         resp.send(resposta)
     }
     catch(err){

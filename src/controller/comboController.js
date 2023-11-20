@@ -1,5 +1,5 @@
 import {Router } from "express";
-import { adicionarItemCombo, alterarCombo, alterarItemCombo, buscarCombos, buscarCombosPorIdAdm, buscarCombosPorIdOuNome, buscarItensComboPorIdCombo, criarCombo, deletarComboPorIdCombo, deletarItensComboPorIdCombo, ordenarCombosPorPrecoMaiorAoMenor, ordenarCombosPorPrecoMenorAoMaior } from "../repository/comboRepository.js";
+import { adicionarItemCombo, alterarCombo, alterarItemCombo, buscarComboPorIdCombo, buscarCombos, buscarCombosPorIdAdm, buscarCombosPorIdOuNome, buscarItensComboPorIdCombo, criarCombo, deletarComboPorIdCombo, deletarItensComboPorIdCombo, ordenarCombosPorPrecoMaiorAoMenor, ordenarCombosPorPrecoMenorAoMaior } from "../repository/comboRepository.js";
 import { BuscaDetalhesId, BuscaProdutoId, BuscarIdAdm, BuscarIdCategoria, BuscarImagens } from "../repository/produtoRepository.js";
 
 const comboEndpoints = Router();
@@ -139,6 +139,34 @@ comboEndpoints.get('/combos/adm', async (req, resp) => {
         }
 
         resp.send(combos)
+    }
+    catch(err){
+        resp.status(500).send({
+            erro: err.message
+        })
+    }
+})
+
+comboEndpoints.get('/combo/:id', async (req, resp) => {
+    try{
+        const id = Number(req.params.id)
+
+        let combo = await buscarComboPorIdCombo(id)
+        combo.admin = await BuscarIdAdm(combo.id_admin)
+        combo.produtos = await buscarItensComboPorIdCombo(combo.id)
+        for(let conta = 0; conta < combo.produtos.length; conta++){
+
+            combo.produtos[conta].produto = await BuscaProdutoId(combo.produtos[conta].id_produto)
+            combo.produtos[conta].produto.categoria = await BuscarIdCategoria(combo.produtos[conta].produto.id_categoria)
+
+            const detalhesProdutos = await BuscaDetalhesId(combo.produtos[conta].produto.id)
+            combo.produtos[conta].produto.detalhes = detalhesProdutos
+
+            const respImagens = await BuscarImagens(combo.produtos[conta].produto.id)
+            combo.produtos[conta].produto.imagem = respImagens[0].caminho
+        }
+
+        resp.send(combo)
     }
     catch(err){
         resp.status(500).send({
