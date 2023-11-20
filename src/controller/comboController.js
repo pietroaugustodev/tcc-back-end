@@ -11,8 +11,8 @@ comboEndpoints.post('/combo', async (req, resp) => {
 
         if(!combo.id_admin || combo.id_admin === 0 || isNaN(combo.id_admin))
             throw new Error('ID adm não definido ou em formato errado')
-        if(!combo.nome)
-            throw new Error('O nome do combo é obrigatório.')
+        if(!combo.nome || combo.nome.length > 50)
+            throw new Error('O nome do combo indefinido ou muito longo.')
         if(!combo.preco)
             throw new Error('O preço do combo é obrigatório.')
 
@@ -361,7 +361,7 @@ comboEndpoints.put('/combo/:id', async (req, resp) => {
         
         if(!combo.id_admin || isNaN(combo.id_admin) || combo.id_admin === 0)
             throw new Error('ID adm não definido')
-        if(!combo.nome)
+        if(!combo.nome || combo.nome.length > 50)
             throw new Error('É obrigatório o combo ter um nome')
         if(!combo.preco)
             throw new Error('É obrigatorio o combo ter um preco')
