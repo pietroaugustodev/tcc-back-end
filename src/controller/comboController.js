@@ -75,8 +75,8 @@ comboEndpoints.post('/combo/item', async (req, resp) => {
 
 
 comboEndpoints.get('/abcd', async (req, resp) => {
-    const resposta = await criarCombo();
-    resp.send(resposta);
+    // const resposta = await criarCombo();
+    resp.send(new Date());
 })
 
 comboEndpoints.get('/combos', async (req, resp) => {
