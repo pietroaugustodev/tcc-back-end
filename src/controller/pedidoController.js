@@ -105,7 +105,6 @@ pedidoEndpoints.get('/pedidos/primeiro-item/:id', async (req, resp) => {
     try {
         const {id} = req.params;
         let pedidos = await buscarPedidosPorIdCliente(id);
-        let i = 0;
         
         for (let cont = 0; cont < pedidos.length; cont++) {
             let itens = await buscarItemsPedidoPorIdPedido(pedidos[cont].id);
