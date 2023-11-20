@@ -231,7 +231,9 @@ export async function buscarPedidosPorIdCliente(id){
                             vl_total            as total,
                             ds_avaliacao        as avalicao
                        from tb_pedido
-                      where id_cliente = ?`
+                      where id_cliente = ?
+                      ORDER BY FIELD(ds_situacao, 'Pedido Realizado', 'Pagamento', 'Pedido em preparo', 'À caminho', 'Entregue', 'Cancelado');
+                    `
 
     const [resp] = await conexao.query(comando, [id])
 
