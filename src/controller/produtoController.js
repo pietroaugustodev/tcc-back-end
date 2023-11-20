@@ -463,7 +463,7 @@ produtoEndpoints.put('/produto/:idProduto/detalhes/:idDetalhe', async (req, resp
             alergia: req.body.alergia,
             dimensoes: req.body.dimensoes
         };
-        console.log(infoDetalhes.descricao);
+        // console.log(infoDetalhes.descricao);
         const respostaDetalhes = await AlterarDetalhesProduto(infoDetalhes, id_detalhe);
         if(respostaDetalhes !== 1)
             throw new Error('Não foi possivel alterar os detalhes do produto')
@@ -520,9 +520,9 @@ produtoEndpoints.put('/produto/:idProduto/detalhes/:idDetalhe', async (req, resp
 produtoEndpoints.delete('/:id/imagens', async (req, resp) => {
     try{
         const {deletar} = req.body
-        console.log(deletar);
+        // console.log(deletar);
         for(let item of deletar){
-            console.log(item);
+            // console.log(item);
             const resposta = await deletarImagem(item)
             if(resposta !== 1)
                 throw new Error('Não foi possivel alterar a imagem de id ' + item)
