@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { buscarCartoesPorIdCliente, BuscarRepetido, Login, alterarEndereco, buscarEnderecosPorIdCliente, cadastro, cadastroEndereco, cadastroEnderecoAssinatura, deletarEndereco, cadastroCartao, alterarCliente, buscarClienteId } from "../repository/clienteRepository.js";
+import { buscarCartoesPorIdCliente, BuscarRepetido, Login, alterarEndereco, buscarEnderecosPorIdCliente, cadastro, cadastroEndereco, cadastroEnderecoAssinatura, deletarEndereco, cadastroCartao, alterarCliente, buscarClienteId, buscarEnderecoPorIdEndereco } from "../repository/clienteRepository.js";
 
 
 const clienteEndpoints = Router()
@@ -155,6 +155,21 @@ clienteEndpoints.post('/cliente/login', async (req, resp) => {
     }
     catch(err){
         resp.status(401).send({
+            erro: err.message
+        })
+    }
+})
+
+clienteEndpoints.get('/endereco/:id', async (req , resp) => {
+    try{
+        const {id} = req.params
+
+        const resposta = await buscarEnderecoPorIdEndereco(id)
+
+        resp.send(resposta)
+    }
+    catch(err){
+        resp.status(500).send({
             erro: err.message
         })
     }
