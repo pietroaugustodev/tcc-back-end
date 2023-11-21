@@ -266,7 +266,7 @@ export async function filtrarProdutosPorIdOuNome(valor) {
                        where  nm_produto like ?
                           or  id_produto = ?`
 
-  const [resp] = await conexao.query(comando, [valor, `%${valor}%`])
+  const [resp] = await conexao.query(comando, [`%${valor}%` , valor])
 
   return resp          
 }
