@@ -1,5 +1,5 @@
 import {Router } from "express";
-import { adicionarItemCombo, alterarCombo, alterarItemCombo, buscarComboPorIdCombo, buscarCombos, buscarCombosPorIdAdm, buscarCombosPorIdOuNome, buscarItensComboPorIdCombo, criarCombo, deletarComboPorIdCombo, deletarItensComboPorIdCombo, ordenarCombosPorPrecoMaiorAoMenor, ordenarCombosPorPrecoMenorAoMaior } from "../repository/comboRepository.js";
+import { adicionarItemCombo, alterarCombo, alterarItemCombo, buscarComboPorIdCombo, buscarComboPorNome, buscarCombos, buscarCombosPorIdAdm, buscarCombosPorIdOuNome, buscarItensComboPorIdCombo, criarCombo, deletarComboPorIdCombo, deletarItensComboPorIdCombo, ordenarCombosPorPrecoMaiorAoMenor, ordenarCombosPorPrecoMenorAoMaior } from "../repository/comboRepository.js";
 import { BuscaDetalhesId, BuscaProdutoId, BuscarIdAdm, BuscarIdCategoria, BuscarImagens } from "../repository/produtoRepository.js";
 
 const comboEndpoints = Router();
@@ -11,8 +11,8 @@ comboEndpoints.post('/combo', async (req, resp) => {
 
         if(!combo.id_admin || combo.id_admin === 0 || isNaN(combo.id_admin))
             throw new Error('ID adm não definido ou em formato errado')
-        if(!combo.nome || combo.nome.length > 50)
-            throw new Error('O nome do combo indefinido ou muito longo.')
+        if(!combo.nome || combo.nome.length > 30)
+            throw new Error('O nome do combo indefinido ou muito extenso.')
         if(!combo.preco)
             throw new Error('O preço do combo é obrigatório.')
 
@@ -153,6 +153,34 @@ comboEndpoints.get('/combo/:id', async (req, resp) => {
 
         let combo = await buscarComboPorIdCombo(id)
         combo.admin = await BuscarIdAdm(combo.id_admin)
+        combo.produtos = await buscarItensComboPorIdCombo(combo.id)
+        for(let conta = 0; conta < combo.produtos.length; conta++){
+
+            combo.produtos[conta].produto = await BuscaProdutoId(combo.produtos[conta].id_produto)
+            combo.produtos[conta].produto.categoria = await BuscarIdCategoria(combo.produtos[conta].produto.id_categoria)
+
+            const detalhesProdutos = await BuscaDetalhesId(combo.produtos[conta].produto.id)
+            combo.produtos[conta].produto.detalhes = detalhesProdutos
+
+            const respImagens = await BuscarImagens(combo.produtos[conta].produto.id)
+            combo.produtos[conta].produto.imagem = respImagens[0].caminho
+        }
+
+        resp.send(combo)
+    }
+    catch(err){
+        resp.status(500).send({
+            erro: err.message
+        })
+    }
+})
+
+comboEndpoints.get('/combo/nome/:nome', async (req, resp) => {
+    try{
+        const {nome} = req.params
+
+        let combo = await buscarComboPorNome(nome)
+        
         combo.produtos = await buscarItensComboPorIdCombo(combo.id)
         for(let conta = 0; conta < combo.produtos.length; conta++){
 

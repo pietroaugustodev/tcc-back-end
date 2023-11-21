@@ -41,6 +41,19 @@ export async function buscarCombos() {
     return resp
 }
 
+export async function buscarComboPorNome(nome){
+    const sql = `select id_combo 	as id,
+                        id_admin,
+                        nm_combo	as nome,
+                        vl_preco	as preco
+                   from tb_combo
+                  where nm_combo like ?`
+
+    const [resp] = await conexao.query(sql, [`%${nome}%`])
+    
+    return resp[0]
+}
+
 export async function buscarComboPorIdCombo(id) {
     const sql = `select id_combo 	as id,
                         id_admin,

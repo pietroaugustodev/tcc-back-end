@@ -10,8 +10,8 @@ const clienteEndpoints = Router()
 clienteEndpoints.post('/cliente', async (req, resp) =>{
     try{
         const cliente = req.body
-        if(!cliente.nome)
-            throw new Error('O nome é obrigatório')
+        if(!cliente.nome || cliente.nome.length > 50)
+            throw new Error('O nome indefinido ou muito extenso.')
         if(!cliente.telefone)
             throw new Error('Telefone obrigatório')
         if(!cliente.cpf)
@@ -108,6 +108,7 @@ clienteEndpoints.post('/cartao/:num', async (req, resp) => {
             if (/\d/.test(infoCartao.titular))
                 throw new Error('Nome é inválido!')
             
+                
             if (infoCartao.identidade === '' || infoCartao.identidade.length !== 11 || !infoCartao.identidade)  
                 throw new Error('CPF incorreto!');
 
