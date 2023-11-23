@@ -155,7 +155,7 @@ export async function buscarPedidosPorCodigo(busca){
                             vl_total            as total,
                             ds_avaliacao        as avalicao
                        from tb_pedido
-                      where ds_codigo_pedido = ?`
+                      where id_pedido = ?`
 
     const [resp] = await conexao.query(comando, [busca])
 
