@@ -236,9 +236,9 @@ export async function cancelarAssinatura(id) {
 
 export async function alterandoStatusAssinatura(id, status) {
     const comando = `update
-                        from tb_assinatura
+                         tb_assinatura
                         set ds_situacao = ?
-                        where id_assinatura = ?`
+                    where id_assinatura = ?`
 
     const [resp] = await conexao.query(comando, [status, id])
     
