@@ -137,9 +137,9 @@ create table tb_pedido_item (
 
 create table tb_combo (
 	id_combo int primary key auto_increment,
-	id_admin int
+	id_admin int,
 	nm_combo varchar(250) not null,
-	vl_preco decimal(7, 2) not null
+	vl_preco decimal(7, 2) not null,
 
 	foreign key(id_admin) references tb_admin(id_admin)
 );
