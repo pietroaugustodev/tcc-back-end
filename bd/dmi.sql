@@ -17,13 +17,17 @@ insert into tb_produto (id_detalhe, id_admin, id_categoria, nm_produto, vl_preco
 
 -- Inserindo Adms
 insert into tb_admin(ds_email, nm_usuario, ds_senha, img_adm)
-				values('pietro@gmail.com', 'pietro', '1234', null);
+				values('pietro@gmail.com', 'pietro', '1234', '/assets/images/homem.webp');
 insert into tb_admin(ds_email, nm_usuario, ds_senha, img_adm)
-				values('william@gmail.com', 'william', '1234', null);
+				values('william@gmail.com', 'william', '1234', '/assets/images/homem.webp');
 insert into tb_admin(ds_email, nm_usuario, ds_senha, img_adm)
-				values('thiago@gmail.com', 'thiago', '1234', null);
+				values('thiago@gmail.com', 'thiago', '1234', '/assets/images/homem.webp');
 insert into tb_admin(ds_email, nm_usuario, ds_senha, img_adm)
-				values('eduardo@gmail.com', 'eduardo', '1234', null);
+				values('eduardo@gmail.com', 'eduardo', '1234', '/assets/images/homem.webp');
+insert into tb_admin(ds_email, nm_usuario, ds_senha, img_adm)
+				values('convidado@gmail.com', 'convidado', 'convidado@senha', '/assets/images/homem.webp');
+insert into tb_admin(ds_email, nm_usuario, ds_senha, img_adm)
+				values('brunofofo@gmail.com', 'Bruno', 'admin@bruno', '/assets/images/ninja.webp');
 
 -- Inserindo categorias
 insert into tb_categoria(nm_categoria, img_categoria)
